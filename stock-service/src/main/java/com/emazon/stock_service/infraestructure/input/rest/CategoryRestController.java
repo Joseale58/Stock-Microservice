@@ -18,9 +18,9 @@ public class CategoryRestController {
 
     //To create a new category
     @PostMapping
-    public ResponseEntity<Void> saveCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<String> saveCategory(@RequestBody CategoryDto categoryDto) {
         categoryHandler.saveCategory(categoryDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body("Se creó exitosamente la categoría: " + categoryDto.getName());
     }
 
 

@@ -3,6 +3,7 @@ package com.emazon.stock_service.infraestructure.output.jpa.adapter;
 import com.emazon.stock_service.domain.api.ICategoryServicePort;
 import com.emazon.stock_service.domain.model.Category;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
+import com.emazon.stock_service.infraestructure.exception.CategoryAlreadyExistsException;
 import com.emazon.stock_service.infraestructure.output.jpa.entity.CategoryEntity;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.ICategoryEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.ICategoryRepository;
@@ -24,6 +25,11 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     //To paginate categories
     @Override
     public void save(Category category) {
+
+        //Validating that the category doesn't exist at DB
+        if(categoryRepository.findByName(category.getName()).isPresent()){
+            throw new CategoryAlreadyExistsException("Esta categoría: " + category.getName() + ", ya existe");
+        }
         categoryRepository.save(categoryEntityMapper.toCategoryEntity(category));
     }
 
