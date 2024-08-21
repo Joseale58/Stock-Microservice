@@ -14,5 +14,5 @@ public interface ICategoryDtoMapper {
 
     //To convert from CategoryDto to Category
     CategoryDto toCategoryDto(Category category);
-    
+
 }
