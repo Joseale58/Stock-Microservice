@@ -18,6 +18,24 @@ public class CategoryUseCase implements ICategoryServicePort {
 
 
     @Override
+    public Category getCategoryByName(String name) {
+        if(name.length() > 50){
+            throw new MissingValueException("La longitud del nombre no puede ser mayor a 50 caracteres");
+        }
+        return this.iCategoryPersistencePort.getCategoryByName(name);
+    }
+
+    @Override
+    public List<Category> getAllCategories() {
+        return this.iCategoryPersistencePort.getAllCategories();
+    }
+
+    @Override
+    public List<Category> getPaginatedCategories(int page, int pageSize, String order) {
+        return this.iCategoryPersistencePort.getPaginatedCategories(page, pageSize, order);
+    }
+
+    @Override
     public void save(Category category) {
         if(category.getName() == null || category.getName().isEmpty()) {
             throw new MissingValueException("El nombre de la categoría no puede ser nulo");

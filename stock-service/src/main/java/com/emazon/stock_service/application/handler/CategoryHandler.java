@@ -20,6 +20,21 @@ public class CategoryHandler implements ICategoryHandler {
 
 
     @Override
+    public CategoryDto getCategoryByName(String categoryName) {
+        return categoryDtoMapper.toCategoryDto(categoryServicePort.getCategoryByName(categoryName));
+    }
+
+    @Override
+    public List<CategoryDto> getAllCategories() {
+        return categoryDtoMapper.toResponseList(categoryServicePort.getAllCategories());
+    }
+
+    @Override
+    public List<CategoryDto> getPaginatedCategories(int page, int page_size, String order) {
+        return categoryDtoMapper.toResponseList(categoryServicePort.getPaginatedCategories(page, page_size, order));
+    }
+
+    @Override
     public void saveCategory(CategoryDto categorydto) {
         Category category = categoryDtoMapper.toCategory(categorydto);
         categoryServicePort.save(category);

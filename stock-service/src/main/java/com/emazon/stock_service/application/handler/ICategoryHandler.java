@@ -6,6 +6,12 @@ import java.util.List;
 
 public interface ICategoryHandler {
 
+    CategoryDto getCategoryByName(String categoryName);
+
+    List<CategoryDto> getAllCategories();
+
+    List<CategoryDto> getPaginatedCategories(int page, int page_size, String order);
+
     void saveCategory(CategoryDto categorydto);
 
     void updateCategory(CategoryDto categorydto);

@@ -16,6 +16,12 @@ public class CategoryRestController {
 
     private final ICategoryHandler categoryHandler;
 
+    //To show a category
+    @GetMapping("/{name}")
+    public ResponseEntity<CategoryDto> getCategory(@PathVariable String name) {
+        return ResponseEntity.ok(categoryHandler.getCategoryByName(name));
+    }
+
     //To create a new category
     @PostMapping
     public ResponseEntity<String> saveCategory(@RequestBody CategoryDto categoryDto) {
