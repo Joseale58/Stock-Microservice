@@ -22,6 +22,19 @@ public class CategoryRestController {
         return ResponseEntity.ok(categoryHandler.getCategoryByName(name));
     }
 
+    //To show all categories
+    @GetMapping
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        return  ResponseEntity.ok(categoryHandler.getAllCategories());
+    }
+
+    //To show categories paginated
+    @GetMapping("/{page}/{page_size}/{order}")
+    public ResponseEntity<List<CategoryDto>> getAllCategories(@PathVariable int page, @PathVariable int page_size, @PathVariable String order) {
+        return ResponseEntity.ok(categoryHandler.getPaginatedCategories(page,page_size, order));
+    }
+
+
     //To create a new category
     @PostMapping
     public ResponseEntity<String> saveCategory(@RequestBody CategoryDto categoryDto) {

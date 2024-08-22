@@ -32,6 +32,23 @@ public class CategoryUseCase implements ICategoryServicePort {
 
     @Override
     public List<Category> getPaginatedCategories(int page, int pageSize, String order) {
+
+        // Validar que el número de página sea mayor o igual a 0
+        if (page < 0) {
+            throw new IllegalArgumentException("El número de página debe ser mayor o igual a 0");
+        }
+
+        // Validar que el tamaño de página sea mayor a 0 y menor o igual a un límite máximo
+        int maxPageSize = 100;  // Definir un límite máximo razonable
+        if (pageSize <= 0 || pageSize > maxPageSize) {
+            throw new IllegalArgumentException("El tamaño de página debe ser mayor a 0 y menor o igual a " + maxPageSize);
+        }
+
+        // Validar que el orden sea ascendente o descendente
+        if (!"asc".equalsIgnoreCase(order) && !"desc".equalsIgnoreCase(order)) {
+            throw new IllegalArgumentException("El parámetro de orden debe ser 'asc' o 'desc'.");
+        }
+
         return this.iCategoryPersistencePort.getPaginatedCategories(page, pageSize, order);
     }
 

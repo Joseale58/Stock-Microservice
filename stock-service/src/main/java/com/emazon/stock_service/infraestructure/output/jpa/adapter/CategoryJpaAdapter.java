@@ -38,6 +38,9 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     @Override
     public List<Category> getAllCategories() {
         List< CategoryEntity> categoryEntityList = categoryRepository.findAll();
+        if (categoryEntityList.isEmpty()) {
+            throw new CategoryNotFoundException("No se encontraron categorías.");
+        }
         return categoryEntityMapper.toCategoryList(categoryEntityList);
     }
 
@@ -53,6 +56,11 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
         Page<CategoryEntity> categoryEntityPage = categoryRepository.findAll(pageable);
         List<CategoryEntity> categoryEntityList = categoryEntityPage.getContent();
+
+        if (categoryEntityList.isEmpty()) {
+            throw new CategoryNotFoundException("No se encontraron categorías.");
+        }
+
         return categoryEntityMapper.toCategoryList(categoryEntityList);
     }
 
