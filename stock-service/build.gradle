@@ -31,6 +31,11 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+	// JUnit 5
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2' // Reemplaza por la última versión
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2' // Reemplaza por la última versió
 }
 
 tasks.named('test') {
