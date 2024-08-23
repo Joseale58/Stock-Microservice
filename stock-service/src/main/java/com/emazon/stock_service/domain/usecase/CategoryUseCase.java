@@ -5,6 +5,7 @@ import com.emazon.stock_service.domain.exception.DataConstraintViolationExceptio
 import com.emazon.stock_service.domain.exception.MissingValueException;
 import com.emazon.stock_service.domain.model.Category;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
+import com.emazon.stock_service.domain.util.pageable.CustomPage;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class CategoryUseCase implements ICategoryServicePort {
     }
 
     @Override
-    public List<Category> getPaginatedCategories(int page, int pageSize, String order) {
+    public CustomPage<Category> getPaginatedCategories(int page, int pageSize, String order) {
 
         // Validar que el número de página sea mayor o igual a 0
         if (page < 0) {

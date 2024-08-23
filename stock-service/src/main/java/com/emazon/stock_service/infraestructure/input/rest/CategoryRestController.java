@@ -1,6 +1,7 @@
 package com.emazon.stock_service.infraestructure.input.rest;
 
 import com.emazon.stock_service.application.dto.CategoryDto;
+import com.emazon.stock_service.application.dto.CustomPageDto;
 import com.emazon.stock_service.application.handler.ICategoryHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class CategoryRestController {
 
     //To show categories paginated
     @GetMapping("/{page}/{page_size}/{order}")
-    public ResponseEntity<List<CategoryDto>> getAllCategories(@PathVariable int page, @PathVariable int page_size, @PathVariable String order) {
+    public ResponseEntity<CustomPageDto<CategoryDto>> getAllCategories(@PathVariable int page, @PathVariable int page_size, @PathVariable String order) {
         return ResponseEntity.ok(categoryHandler.getPaginatedCategories(page,page_size, order));
     }
 

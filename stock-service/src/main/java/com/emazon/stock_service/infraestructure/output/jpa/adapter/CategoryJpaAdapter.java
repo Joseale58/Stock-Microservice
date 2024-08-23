@@ -1,8 +1,8 @@
 package com.emazon.stock_service.infraestructure.output.jpa.adapter;
 
-import com.emazon.stock_service.domain.api.ICategoryServicePort;
 import com.emazon.stock_service.domain.model.Category;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
+import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import com.emazon.stock_service.infraestructure.exception.CategoryAlreadyExistsException;
 import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundException;
 import com.emazon.stock_service.infraestructure.output.jpa.entity.CategoryEntity;
@@ -46,7 +46,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
     //To paginate categories
     @Override
-    public List<Category> getPaginatedCategories(int page, int pageSize, String order) {
+    public CustomPage<Category> getPaginatedCategories(int page, int pageSize, String order) {
         final Pageable pageable; // Declare var out of if-block
         if(order.equals("asc")){
             pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "name"));
@@ -61,7 +61,14 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
             throw new CategoryNotFoundException("No se encontraron categorías.");
         }
 
-        return categoryEntityMapper.toCategoryList(categoryEntityList);
+        return new CustomPage<>(
+                categoryEntityMapper.toCategoryList(categoryEntityList),
+                categoryEntityPage.getTotalElements(),
+                categoryEntityPage.getTotalPages(),
+                categoryEntityPage.getNumber(),
+                order.equals("asc"),
+                categoryEntityPage.isEmpty()
+        );
     }
 
     //To create a new category

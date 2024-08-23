@@ -1,6 +1,7 @@
 package com.emazon.stock_service.domain.api;
 
 import com.emazon.stock_service.domain.model.Category;
+import com.emazon.stock_service.domain.util.pageable.CustomPage;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface ICategoryServicePort {
     //To show all categories
     List<Category> getAllCategories();
     //To paginate categories
-    List<Category> getPaginatedCategories(int page, int pageSize, String order);
+    CustomPage<Category> getPaginatedCategories(int page, int pageSize, String order);
     //To create a new cat
     void save(Category category);
     //To update an existent cat

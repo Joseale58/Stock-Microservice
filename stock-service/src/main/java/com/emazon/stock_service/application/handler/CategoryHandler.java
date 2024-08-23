@@ -1,9 +1,12 @@
 package com.emazon.stock_service.application.handler;
 
 import com.emazon.stock_service.application.dto.CategoryDto;
+import com.emazon.stock_service.application.dto.CustomPageDto;
 import com.emazon.stock_service.application.mapper.ICategoryDtoMapper;
+import com.emazon.stock_service.application.mapper.ICustomPageDtoMapper;
 import com.emazon.stock_service.domain.api.ICategoryServicePort;
 import com.emazon.stock_service.domain.model.Category;
+import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ public class CategoryHandler implements ICategoryHandler {
 
     private final ICategoryServicePort categoryServicePort;
     private final ICategoryDtoMapper categoryDtoMapper;
+    private final ICustomPageDtoMapper pageCustomDtoMapper;
 
 
     @Override
@@ -30,8 +34,8 @@ public class CategoryHandler implements ICategoryHandler {
     }
 
     @Override
-    public List<CategoryDto> getPaginatedCategories(int page, int page_size, String order) {
-        return categoryDtoMapper.toResponseList(categoryServicePort.getPaginatedCategories(page, page_size, order));
+    public CustomPageDto<CategoryDto> getPaginatedCategories(int page, int page_size, String order) {
+        return pageCustomDtoMapper.toCustomPageDto(categoryServicePort.getPaginatedCategories(page,page_size,order));
     }
 
     @Override
