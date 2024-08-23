@@ -15,4 +15,14 @@ public interface ICategoryDtoMapper {
     //To convert from CategoryDto to Category
     CategoryDto toCategoryDto(Category category);
 
+    //To get the whole list of categories as dto
+    default List<CategoryDto> toResponseList(List<Category> categoryList){
+        return categoryList.stream().map(category ->{
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setId(category.getId());
+            categoryDto.setName(category.getName());
+            categoryDto.setDescription(category.getDescription());
+            return categoryDto;
+        }).toList();
+    }
 }

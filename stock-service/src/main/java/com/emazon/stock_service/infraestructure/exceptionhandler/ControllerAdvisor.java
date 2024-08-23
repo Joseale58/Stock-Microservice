@@ -3,6 +3,7 @@ package com.emazon.stock_service.infraestructure.exceptionhandler;
 import com.emazon.stock_service.domain.exception.DataConstraintViolationException;
 import com.emazon.stock_service.domain.exception.MissingValueException;
 import com.emazon.stock_service.infraestructure.exception.CategoryAlreadyExistsException;
+import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,6 +24,14 @@ public class ControllerAdvisor {
                 .body(Collections.singletonMap(MESSAGE, categoryAlreadyExistsException.getMessage()));
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCategoryNotFoundException(
+            CategoryNotFoundException categoryNotFoundException){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(MESSAGE, categoryNotFoundException.getMessage()));
+    }
+
+
     //Exceptions handling from domain layer
 
     @ExceptionHandler(DataConstraintViolationException.class)
@@ -39,5 +48,14 @@ public class ControllerAdvisor {
     {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap(MESSAGE, missingValueException.getMessage()));
+    }
+
+    // Manejo de IllegalArgumentException
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(
+            IllegalArgumentException illegalArgumentException)
+    {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Collections.singletonMap(MESSAGE, illegalArgumentException.getMessage()));
     }
 }
