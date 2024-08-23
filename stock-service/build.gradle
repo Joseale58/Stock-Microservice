@@ -21,6 +21,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	gradlePluginPortal()
 }
 
 dependencies {
@@ -38,6 +39,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2' // Reemplaza por la última versión
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0' // Para Spring MVC
+
+	implementation 'io.github.cdimascio:dotenv-java:3.0.0' //To load .env vars
 
 }
 
