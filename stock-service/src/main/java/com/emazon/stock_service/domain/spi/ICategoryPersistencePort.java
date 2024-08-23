@@ -11,7 +11,7 @@ public interface ICategoryPersistencePort {
     //To show all categories
     List<Category> getAllCategories();
     //To paginate categories
-    CustomPage<Category> getPaginatedCategories(int page, int pageSize, String order);
+    CustomPage<Category> getPaginatedCategories(int page, int pagesize, String order);
     //To create a new cat
     void save(Category category);
     //To update an existent cat

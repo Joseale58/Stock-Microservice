@@ -30,9 +30,9 @@ public class CategoryRestController {
     }
 
     //To show categories paginated
-    @GetMapping("/{page}/{page_size}/{order}")
-    public ResponseEntity<CustomPageDto<CategoryDto>> getAllCategories(@PathVariable int page, @PathVariable int page_size, @PathVariable String order) {
-        return ResponseEntity.ok(categoryHandler.getPaginatedCategories(page,page_size, order));
+    @GetMapping("/{page}/{pagesize}/{order}")
+    public ResponseEntity<CustomPageDto<CategoryDto>> getAllCategories(@PathVariable int page, @PathVariable int pagesize, @PathVariable String order) {
+        return ResponseEntity.ok(categoryHandler.getPaginatedCategories(page,pagesize, order));
     }
 
 

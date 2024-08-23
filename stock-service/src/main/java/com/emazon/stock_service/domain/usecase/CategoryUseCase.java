@@ -32,7 +32,7 @@ public class CategoryUseCase implements ICategoryServicePort {
     }
 
     @Override
-    public CustomPage<Category> getPaginatedCategories(int page, int pageSize, String order) {
+    public CustomPage<Category> getPaginatedCategories(int page, int pagesize, String order) {
 
         // Validar que el número de página sea mayor o igual a 0
         if (page < 0) {
@@ -41,7 +41,7 @@ public class CategoryUseCase implements ICategoryServicePort {
 
         // Validar que el tamaño de página sea mayor a 0 y menor o igual a un límite máximo
         int maxPageSize = 100;  // Definir un límite máximo razonable
-        if (pageSize <= 0 || pageSize > maxPageSize) {
+        if (pagesize <= 0 || pagesize > maxPageSize) {
             throw new IllegalArgumentException("El tamaño de página debe ser mayor a 0 y menor o igual a " + maxPageSize);
         }
 
@@ -50,7 +50,7 @@ public class CategoryUseCase implements ICategoryServicePort {
             throw new IllegalArgumentException("El parámetro de orden debe ser 'asc' o 'desc'.");
         }
 
-        return this.iCategoryPersistencePort.getPaginatedCategories(page, pageSize, order);
+        return this.iCategoryPersistencePort.getPaginatedCategories(page, pagesize, order);
     }
 
     @Override
