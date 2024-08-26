@@ -1,12 +1,15 @@
 package com.emazon.stock_service.infraestructure.output.jpa.adapter;
 
 import com.emazon.stock_service.domain.model.Category;
+import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import com.emazon.stock_service.infraestructure.exception.CategoryAlreadyExistsException;
 import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundException;
 import com.emazon.stock_service.infraestructure.output.jpa.entity.CategoryEntity;
+import com.emazon.stock_service.infraestructure.output.jpa.mapper.IBrandEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.ICategoryEntityMapper;
+import com.emazon.stock_service.infraestructure.output.jpa.repository.IBrandRepository;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -91,4 +94,6 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     public void delete(Category category) {
 
     }
+
+
 }
