@@ -18,16 +18,16 @@ public class BrandUseCase implements IBrandServicePort {
     @Override
     public void save(Brand brand) {
         if(brand.getName() == null || brand.getName().isEmpty()) {
-            throw new MissingValueException("El nombre de la marca no puede ser nulo");
+            throw new MissingValueException("nombre de marca");
         }
         if(brand.getDescription() == null || brand.getDescription().isEmpty()) {
-            throw new MissingValueException("La descripción de la marca no puede ser nula");
+            throw new MissingValueException("descripción");
         }
         if(brand.getName().length() > 50){
-            throw new DataConstraintViolationException("La longitud del nombre no puede ser mayor a 50 caracteres");
+            throw new DataConstraintViolationException("nombre",50);
         }
         if (brand.getDescription().length() > 120){
-            throw new DataConstraintViolationException("La longitud de la descripción no puede ser mayor a 120 caracteres");
+            throw new DataConstraintViolationException("descripcion",120);
         }
         this.brandPersistencePort.save(brand);
     }

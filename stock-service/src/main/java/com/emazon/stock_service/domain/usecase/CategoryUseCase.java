@@ -21,7 +21,7 @@ public class CategoryUseCase implements ICategoryServicePort {
     @Override
     public Category getCategoryByName(String name) {
         if(name.length() > 50){
-            throw new MissingValueException("La longitud del nombre no puede ser mayor a 50 caracteres");
+            throw new IllegalArgumentException("El nombre de la categoría no puede ser mayor a 50 caracteres");
         }
         return this.iCategoryPersistencePort.getCategoryByName(name);
     }
@@ -56,16 +56,16 @@ public class CategoryUseCase implements ICategoryServicePort {
     @Override
     public void save(Category category) {
         if(category.getName() == null || category.getName().isEmpty()) {
-            throw new MissingValueException("El nombre de la categoría no puede ser nulo");
+            throw new MissingValueException("nombre de categoría");
         }
         if(category.getDescription() == null || category.getDescription().isEmpty()) {
-            throw new MissingValueException("La descripción de la categoría no puede ser nula");
+            throw new MissingValueException("descripción");
         }
         if(category.getName().length() > 50){
-            throw new DataConstraintViolationException("La longitud del nombre no puede ser mayor a 50 caracteres");
+            throw new DataConstraintViolationException("nombre", 50);
         }
         if (category.getDescription().length() > 90){
-            throw new DataConstraintViolationException("La longitud de la descripción no puede ser mayor a 90 caracteres");
+            throw new DataConstraintViolationException("descripción", 90);
         }
         this.iCategoryPersistencePort.save(category);
     }
