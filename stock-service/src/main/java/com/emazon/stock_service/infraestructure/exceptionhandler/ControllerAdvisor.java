@@ -21,14 +21,14 @@ public class ControllerAdvisor {
     public ResponseEntity<Map<String, String>> handleCategoryAlreadyExistsException(
             CategoryAlreadyExistsException categoryAlreadyExistsException) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Collections.singletonMap(MESSAGE, categoryAlreadyExistsException.getMessage()));
+                .body(Collections.singletonMap(MESSAGE, ExceptionResponse.CATEGORY_ALREADY_EXISTS.getMessage()));
     }
 
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCategoryNotFoundException(
             CategoryNotFoundException categoryNotFoundException){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap(MESSAGE, categoryNotFoundException.getMessage()));
+                .body(Collections.singletonMap(MESSAGE,  ExceptionResponse.CATEGORY_NOT_FOUND.getMessage()));
     }
 
 

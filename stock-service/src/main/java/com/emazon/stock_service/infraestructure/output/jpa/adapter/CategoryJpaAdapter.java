@@ -32,7 +32,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     public Category getCategoryByName(String name) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepository.findByName(name);
         if(categoryEntityOptional.isEmpty()) {
-            throw new CategoryNotFoundException("No se encontró una categoría: " + name);
+            throw new CategoryNotFoundException();
         }
         return categoryEntityMapper.toCategory(categoryEntityOptional.get());
     }
@@ -42,7 +42,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     public List<Category> getAllCategories() {
         List< CategoryEntity> categoryEntityList = categoryRepository.findAll();
         if (categoryEntityList.isEmpty()) {
-            throw new CategoryNotFoundException("No se encontraron categorías.");
+            throw new CategoryNotFoundException();
         }
         return categoryEntityMapper.toCategoryList(categoryEntityList);
     }
@@ -61,7 +61,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
         List<CategoryEntity> categoryEntityList = categoryEntityPage.getContent();
 
         if (categoryEntityList.isEmpty()) {
-            throw new CategoryNotFoundException("No se encontraron categorías.");
+            throw new CategoryNotFoundException();
         }
 
         return new CustomPage<>(
@@ -80,7 +80,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
         //Validating that the category doesn't exist at DB
         if(categoryRepository.findByName(category.getName()).isPresent()){
-            throw new CategoryAlreadyExistsException("Esta categoría: " + category.getName() + ", ya existe");
+            throw new CategoryAlreadyExistsException("Ya existe una categoría con ese nombre");
         }
         categoryRepository.save(categoryEntityMapper.toCategoryEntity(category));
     }
