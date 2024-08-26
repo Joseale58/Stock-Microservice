@@ -5,13 +5,13 @@ import java.util.List;
 public class CustomPage<T>{
 
     private List<T> content;
-    private long totalElements;
-    private int totalPages;
-    private int currentPage;
-    private  boolean ascending;
-    private boolean empty;
+    private Long totalElements;
+    private Integer totalPages;
+    private Integer currentPage;
+    private  Boolean ascending;
+    private Boolean empty;
 
-    public CustomPage(List<T> content, long totalElements, int totalPages, int currentPage, boolean ascending, boolean empty) {
+    public CustomPage(List<T> content, Long totalElements, Integer totalPages, Integer currentPage, Boolean ascending, Boolean empty) {
         this.content = content;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
@@ -32,15 +32,15 @@ public class CustomPage<T>{
         return totalElements;
     }
 
-    public void setTotalElements(int totalElemnts) {
-        this.totalElements = totalElemnts;
+    public void setTotalElements(Long totalElements) {
+        this.totalElements = totalElements;
     }
 
     public int getTotalPages() {
         return totalPages;
     }
 
-    public void setTotalPages(int totalPages) {
+    public void setTotalPages(Integer totalPages) {
         this.totalPages = totalPages;
     }
 
@@ -48,7 +48,7 @@ public class CustomPage<T>{
         return currentPage;
     }
 
-    public void setCurrentPage(int currentPage) {
+    public void setCurrentPage(Integer currentPage) {
         this.currentPage = currentPage;
     }
 
@@ -56,7 +56,7 @@ public class CustomPage<T>{
         return ascending;
     }
 
-    public void setAscending(boolean ascending) {
+    public void setAscending(Boolean ascending) {
         this.ascending = ascending;
     }
 
@@ -64,7 +64,7 @@ public class CustomPage<T>{
         return empty;
     }
 
-    public void setEmpty(boolean empty) {
+    public void setEmpty(Boolean empty) {
         this.empty = empty;
     }
 }

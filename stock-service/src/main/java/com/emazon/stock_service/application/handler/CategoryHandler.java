@@ -33,8 +33,8 @@ public class CategoryHandler implements ICategoryHandler {
     }
 
     @Override
-    public CustomPageDto<CategoryDto> getPaginatedCategories(int page, int pagesize, String order) {
-        return pageCustomDtoMapper.toCustomPageDto(categoryServicePort.getPaginatedCategories(page,pagesize,order));
+    public CustomPageDto<CategoryDto> getPaginatedCategories(Integer page, Integer pageSize, String order) {
+        return pageCustomDtoMapper.toCustomPageDto(categoryServicePort.getPaginatedCategories(page,pageSize,order));
     }
 
     @Override

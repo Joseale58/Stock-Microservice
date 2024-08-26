@@ -122,7 +122,7 @@ public class CategoryServiceTest {
 
         // Crear la página personalizada simulada
         CustomPage<Category> paginatedCategories = new CustomPage<>(
-                content, 10, 4, 0, false, false
+                content, 10L, 4, 0, false, false
         );
         
         when(categoryPersistencePort.getPaginatedCategories(page, pageSize, order)).thenReturn(paginatedCategories);

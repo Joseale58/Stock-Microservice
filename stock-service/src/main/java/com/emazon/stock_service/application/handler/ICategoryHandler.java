@@ -11,7 +11,7 @@ public interface ICategoryHandler {
 
     List<CategoryDto> getAllCategories();
 
-    CustomPageDto<CategoryDto> getPaginatedCategories(int page, int pagesize, String order);
+    CustomPageDto<CategoryDto> getPaginatedCategories(Integer page, Integer pageSize, String order);
 
     void saveCategory(CategoryDto categorydto);
 

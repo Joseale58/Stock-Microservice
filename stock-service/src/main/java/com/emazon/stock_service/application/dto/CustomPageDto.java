@@ -9,9 +9,9 @@ import java.util.List;
 @Setter
 public class CustomPageDto<T> {
     private List<T> content;
-    private int totalElements;
-    private int totalPages;
-    private int currentPage;
-    private boolean ascending;
-    private boolean empty;
+    private Integer totalElements;
+    private Integer totalPages;
+    private Integer currentPage;
+    private Boolean ascending;
+    private Boolean empty;
 }

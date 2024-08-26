@@ -46,7 +46,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
     //To paginate categories
     @Override
-    public CustomPage<Category> getPaginatedCategories(int page, int pageSize, String order) {
+    public CustomPage<Category> getPaginatedCategories(Integer page, Integer pageSize, String order) {
         final Pageable pageable; // Declare var out of if-block
         if(order.equals("asc")){
             pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "name"));
