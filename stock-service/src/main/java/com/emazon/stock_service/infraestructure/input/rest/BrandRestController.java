@@ -19,7 +19,7 @@ public class BrandRestController {
     @PostMapping
     public ResponseEntity<String> saveCategory(@RequestBody BrandDto brandDto) {
         brandHandler.saveBrand(brandDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Se creó exitosamente la categoría: " + brandDto.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body("Se creó exitosamente la marca: " + brandDto.getName());
     }
 
 
