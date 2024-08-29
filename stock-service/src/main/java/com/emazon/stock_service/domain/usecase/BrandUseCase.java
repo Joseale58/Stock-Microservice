@@ -5,6 +5,7 @@ import com.emazon.stock_service.domain.exception.DataConstraintViolationExceptio
 import com.emazon.stock_service.domain.exception.MissingValueException;
 import com.emazon.stock_service.domain.model.Brand;
 import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
+import com.emazon.stock_service.domain.util.pageable.CustomPage;
 
 public class BrandUseCase implements IBrandServicePort {
 
@@ -13,6 +14,27 @@ public class BrandUseCase implements IBrandServicePort {
 
     public BrandUseCase(IBrandPersistencePort brandPersistencePort) {
         this.brandPersistencePort = brandPersistencePort;
+    }
+
+    @Override
+    public CustomPage<Brand> getPaginatedBrands(Integer page, Integer pageSize, String order) {
+        // Validar que el número de página sea mayor o igual a 0
+        if (page < 0) {
+            throw new IllegalArgumentException("El número de página debe ser mayor o igual a 0");
+        }
+
+        // Validar que el tamaño de página sea mayor a 0 y menor o igual a un límite máximo
+        int maxPageSize = 100;  // Definir un límite máximo razonable
+        if (pageSize <= 0 || pageSize > maxPageSize) {
+            throw new IllegalArgumentException("El tamaño de página debe ser mayor a 0 y menor o igual a " + maxPageSize);
+        }
+
+        // Validar que el orden sea ascendente o descendente
+        if (!"asc".equalsIgnoreCase(order) && !"desc".equalsIgnoreCase(order)) {
+            throw new IllegalArgumentException("El parámetro de orden debe ser 'asc' o 'desc'.");
+        }
+
+        return this.brandPersistencePort.getPaginatedBrands(page, pageSize, order);
     }
 
     @Override

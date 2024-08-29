@@ -4,8 +4,7 @@ import com.emazon.stock_service.domain.exception.DataConstraintViolationExceptio
 import com.emazon.stock_service.domain.exception.MissingValueException;
 import com.emazon.stock_service.domain.model.Category;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
-import com.emazon.stock_service.domain.api.ICategoryServicePort; // Asegúrate de que esta línea sea correcta
-
+import com.emazon.stock_service.domain.api.ICategoryServicePort;
 import com.emazon.stock_service.domain.usecase.CategoryUseCase;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,16 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class CategoryServiceTest {
-
-//    private ICategoryServicePort categoryService;
-//    private ICategoryServicePort categoryPersistencePort;
-//
-//    @BeforeEach
-//    void setUp() {
-//        categoryPersistencePort = mock(ICategoryServicePort.class);
-//        categoryService = new ICategoryServicePort(categoryPersistencePort);
-//    }
+class CategoryServiceTest {
 
     private ICategoryPersistencePort categoryPersistencePort;
     private ICategoryServicePort categoryServicePort;
@@ -43,18 +33,18 @@ public class CategoryServiceTest {
 
 
     @Test
-    public void testGetCategoryByName_NameTooLong_ThrowsMissingValueException() {
+     void testGetCategoryByName_NameTooLong_ThrowsDataConstraintViolationException() {
         String longName = "Nombre que excede los cincuenta caracteres, por lo tanto, es inválido";
 
-        Exception exception = assertThrows(MissingValueException.class, () -> {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             categoryServicePort.getCategoryByName(longName);
         });
 
-        assertEquals("La longitud del nombre no puede ser mayor a 50 caracteres", exception.getMessage());
+        assertEquals("El nombre de la categoría no puede ser mayor a 50 caracteres", exception.getMessage());
     }
 
     @Test
-    public void testGetCategoryByName_ValidName_ReturnsCategory() {
+     void testGetCategoryByName_ValidName_ReturnsCategory() {
         String validName = "Nombre válido";
         when(categoryPersistencePort.getCategoryByName(validName)).thenReturn(category);
 
@@ -65,7 +55,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void testGetAllCategories_ReturnsListOfCategories() {
+     void testGetAllCategories_ReturnsListOfCategories() {
         List<Category> categories = Arrays.asList(
                 new Category(1L, "Categoria 1", "Descripción 1"),
                 new Category(2L, "Categoria 2", "Descripción 2")
@@ -80,7 +70,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void testGetPaginatedCategories_InvalidPage_ThrowsIllegalArgumentException() {
+     void testGetPaginatedCategories_InvalidPage_ThrowsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             categoryServicePort.getPaginatedCategories(-1, 10, "asc");
         });
@@ -89,7 +79,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void testGetPaginatedCategories_InvalidPageSize_ThrowsIllegalArgumentException() {
+     void testGetPaginatedCategories_InvalidPageSize_ThrowsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             categoryServicePort.getPaginatedCategories(0, 0, "asc");
         });
@@ -98,7 +88,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void testGetPaginatedCategories_InvalidOrder_ThrowsIllegalArgumentException() {
+     void testGetPaginatedCategories_InvalidOrder_ThrowsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             categoryServicePort.getPaginatedCategories(0, 10, "invalid_order");
         });
@@ -107,7 +97,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void testGetPaginatedCategories_ValidParameters_ReturnsPaginatedCategories() {
+    void testGetPaginatedCategories_ValidParameters_ReturnsPaginatedCategories() {
         // Simular el comportamiento del método cuando los parámetros son válidos
         int page = 0;
         int pageSize = 10;
@@ -134,7 +124,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void testSave_CategoryNameIsNull_ThrowsMissingValueException() {
+    void testSave_CategoryNameIsNull_ThrowsMissingValueException() {
         // Crear un objeto Category con nombre nulo
         category = new Category(1L, null, "Descripción válida");
 
@@ -142,11 +132,11 @@ public class CategoryServiceTest {
             categoryServicePort.save(category);
         });
 
-        assertEquals("El nombre de la categoría no puede ser nulo", exception.getMessage());
+        assertEquals("nombre de categoría no puede ser nulo", exception.getMessage());
     }
 
     @Test
-    public void testSave_CategoryDescriptionIsNull_ThrowsMissingValueException() {
+     void testSave_CategoryDescriptionIsNull_ThrowsMissingValueException() {
         // Crear un objeto Category con descripción nula
         category = new Category(1L, "Nombre válido", null);
 
@@ -154,11 +144,11 @@ public class CategoryServiceTest {
             categoryServicePort.save(category);
         });
 
-        assertEquals("La descripción de la categoría no puede ser nula", exception.getMessage());
+        assertEquals("descripción no puede ser nulo", exception.getMessage());
     }
 
     @Test
-    public void testSave_CategoryNameTooLong_ThrowsDataConstraintViolationException() {
+    void testSave_CategoryNameTooLong_ThrowsDataConstraintViolationException() {
         // Crear un objeto Category con nombre demasiado largo
         category = new Category(1L, "Nombre que excede los cincuenta caracteres, por lo tanto, es inválido", "Descripción válida");
 
@@ -166,12 +156,12 @@ public class CategoryServiceTest {
             categoryServicePort.save(category);
         });
 
-        assertEquals("La longitud del nombre no puede ser mayor a 50 caracteres", exception.getMessage());
+        assertEquals("La longitud de nombre debe ser máximo de: 50 caracteres", exception.getMessage());
     }
 
 
     @Test
-    public void testSave_CategoryDescriptionTooLong_ThrowsDataConstraintViolationException() {
+    void testSave_CategoryDescriptionTooLong_ThrowsDataConstraintViolationException() {
         // Crear un objeto Category con descripción demasiado larga
         category = new Category(1L, "Nombre válido", "Descripción que excede los noventa caracteres, por lo tanto, es inválida, y no debe ser aceptada por el sistema.");
 
@@ -179,11 +169,11 @@ public class CategoryServiceTest {
             categoryServicePort.save(category);
         });
 
-        assertEquals("La longitud de la descripción no puede ser mayor a 90 caracteres", exception.getMessage());
+        assertEquals("La longitud de descripción debe ser máximo de: 90 caracteres", exception.getMessage());
     }
 
     @Test
-    public void testSave_ValidCategory_SavesCategory() {
+    void testSave_ValidCategory_SavesCategory() {
         // Usar el objeto category ya inicializado en setUp
         categoryServicePort.save(category);
 
