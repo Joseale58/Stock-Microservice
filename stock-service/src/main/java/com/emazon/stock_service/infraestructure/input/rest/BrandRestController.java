@@ -1,7 +1,6 @@
 package com.emazon.stock_service.infraestructure.input.rest;
 
 import com.emazon.stock_service.application.dto.BrandDto;
-import com.emazon.stock_service.application.dto.CategoryDto;
 import com.emazon.stock_service.application.dto.CustomPageDto;
 import com.emazon.stock_service.application.handler.IBrandHandler;
 import lombok.RequiredArgsConstructor;

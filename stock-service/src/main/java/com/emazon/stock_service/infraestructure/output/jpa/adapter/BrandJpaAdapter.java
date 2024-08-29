@@ -6,7 +6,6 @@ import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import com.emazon.stock_service.infraestructure.exception.CategoryAlreadyExistsException;
 import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundException;
 import com.emazon.stock_service.infraestructure.output.jpa.entity.BrandEntity;
-import com.emazon.stock_service.infraestructure.output.jpa.entity.CategoryEntity;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.IBrandEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.IBrandRepository;
 import lombok.RequiredArgsConstructor;
