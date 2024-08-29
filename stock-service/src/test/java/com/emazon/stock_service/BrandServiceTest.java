@@ -7,7 +7,6 @@ import com.emazon.stock_service.domain.model.Brand;
 import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
 import com.emazon.stock_service.domain.usecase.BrandUseCase;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
-import com.emazon.stock_service.domain.usecase.BrandUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class BrandServiceTest {
+class BrandServiceTest {
 
     private IBrandServicePort brandUseCase;
     private IBrandPersistencePort brandPersistencePort;
@@ -84,14 +83,14 @@ public class BrandServiceTest {
 
     @Test
     void testSave_ValidBrand() {
-        Brand brand = new Brand(1L, "Valid Name", "Valid Description");
+        brand = new Brand(1L, "Valid Name", "Valid Description");
         brandUseCase.save(brand);
         verify(brandPersistencePort, times(1)).save(brand);
     }
 
     @Test
     void testSave_NullBrandName() {
-        Brand brand = new Brand(1L, null, "Valid Description");
+        brand = new Brand(1L, null, "Valid Description");
 
         MissingValueException exception = assertThrows(MissingValueException.class, () ->
                 brandUseCase.save(brand));
@@ -101,7 +100,7 @@ public class BrandServiceTest {
 
     @Test
     void testSave_EmptyBrandName() {
-        Brand brand = new Brand(1L, "", "Valid Description");
+        brand = new Brand(1L, "", "Valid Description");
 
         MissingValueException exception = assertThrows(MissingValueException.class, () ->
                 brandUseCase.save(brand));
@@ -111,7 +110,7 @@ public class BrandServiceTest {
 
     @Test
     void testSave_TooLongBrandName() {
-        Brand brand = new Brand(1L,"A".repeat(51), "Valid Description");
+        brand = new Brand(1L,"A".repeat(51), "Valid Description");
 
         DataConstraintViolationException exception = assertThrows(DataConstraintViolationException.class, () ->
                 brandUseCase.save(brand));
@@ -121,7 +120,7 @@ public class BrandServiceTest {
 
     @Test
     void testSave_TooLongBrandDescription() {
-        Brand brand = new Brand(1L, "Valid Name", "A".repeat(121));
+        brand = new Brand(1L, "Valid Name", "A".repeat(121));
         DataConstraintViolationException exception = assertThrows(DataConstraintViolationException.class, () ->
                 brandUseCase.save(brand));
         assertEquals("La longitud de descripcion debe ser máximo de: 120 caracteres", exception.getMessage());
