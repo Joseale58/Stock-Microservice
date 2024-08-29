@@ -21,15 +21,6 @@ import static org.mockito.Mockito.*;
 
 public class CategoryServiceTest {
 
-//    private ICategoryServicePort categoryService;
-//    private ICategoryServicePort categoryPersistencePort;
-//
-//    @BeforeEach
-//    void setUp() {
-//        categoryPersistencePort = mock(ICategoryServicePort.class);
-//        categoryService = new ICategoryServicePort(categoryPersistencePort);
-//    }
-
     private ICategoryPersistencePort categoryPersistencePort;
     private ICategoryServicePort categoryServicePort;
     private Category category;
