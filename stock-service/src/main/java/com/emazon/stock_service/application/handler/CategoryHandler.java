@@ -3,7 +3,7 @@ package com.emazon.stock_service.application.handler;
 import com.emazon.stock_service.application.dto.CategoryDto;
 import com.emazon.stock_service.application.dto.CustomPageDto;
 import com.emazon.stock_service.application.mapper.ICategoryDtoMapper;
-import com.emazon.stock_service.application.mapper.ICustomPageDtoMapper;
+import com.emazon.stock_service.application.mapper.ICategoryPageDtoMapper;
 import com.emazon.stock_service.domain.api.ICategoryServicePort;
 import com.emazon.stock_service.domain.model.Category;
 import jakarta.transaction.Transactional;
@@ -19,7 +19,7 @@ public class CategoryHandler implements ICategoryHandler {
 
     private final ICategoryServicePort categoryServicePort;
     private final ICategoryDtoMapper categoryDtoMapper;
-    private final ICustomPageDtoMapper pageCustomDtoMapper;
+    private final ICategoryPageDtoMapper categoryPageDtoMapper;
 
 
     @Override
@@ -34,7 +34,7 @@ public class CategoryHandler implements ICategoryHandler {
 
     @Override
     public CustomPageDto<CategoryDto> getPaginatedCategories(Integer page, Integer pageSize, String order) {
-        return pageCustomDtoMapper.toCustomPageDto(categoryServicePort.getPaginatedCategories(page,pageSize,order));
+        return categoryPageDtoMapper.toCustomPageDto(categoryServicePort.getPaginatedCategories(page,pageSize,order));
     }
 
     @Override

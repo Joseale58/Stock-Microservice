@@ -7,7 +7,7 @@ import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface ICustomPageDtoMapper {
+public interface ICategoryPageDtoMapper {
 
 
     // Mapea de modelo a DTO
