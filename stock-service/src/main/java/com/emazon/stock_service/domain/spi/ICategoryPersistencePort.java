@@ -6,7 +6,10 @@ import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import java.util.List;
 
 public interface ICategoryPersistencePort {
-    //To show a category
+
+    //To show a category by id
+    Category getCategoryById(Long id);
+    //To show a category by name
     Category getCategoryByName(String name);
     //To show all categories
     List<Category> getAllCategories();

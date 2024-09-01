@@ -1,15 +1,13 @@
 package com.emazon.stock_service.infraestructure.output.jpa.adapter;
 
 import com.emazon.stock_service.domain.model.Category;
-import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import com.emazon.stock_service.infraestructure.exception.CategoryAlreadyExistsException;
-import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundException;
+import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundByIdException;
+import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundByNameException;
 import com.emazon.stock_service.infraestructure.output.jpa.entity.CategoryEntity;
-import com.emazon.stock_service.infraestructure.output.jpa.mapper.IBrandEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.ICategoryEntityMapper;
-import com.emazon.stock_service.infraestructure.output.jpa.repository.IBrandRepository;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,12 +25,22 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     private final ICategoryEntityMapper categoryEntityMapper;
 
 
+    //To show a category by id
+    @Override
+    public Category getCategoryById(Long id) {
+        Optional<CategoryEntity> categoryEntityOptional = categoryRepository.findById(id);
+        if(categoryEntityOptional.isEmpty()) {
+            throw new CategoryNotFoundByIdException();
+        }
+        return categoryEntityMapper.toCategory(categoryEntityOptional.get());
+    }
+
     //To show a category by name
     @Override
     public Category getCategoryByName(String name) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepository.findByName(name);
         if(categoryEntityOptional.isEmpty()) {
-            throw new CategoryNotFoundException();
+            throw new CategoryNotFoundByNameException();
         }
         return categoryEntityMapper.toCategory(categoryEntityOptional.get());
     }
@@ -42,7 +50,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     public List<Category> getAllCategories() {
         List< CategoryEntity> categoryEntityList = categoryRepository.findAll();
         if (categoryEntityList.isEmpty()) {
-            throw new CategoryNotFoundException();
+            throw new CategoryNotFoundByNameException();
         }
         return categoryEntityMapper.toCategoryList(categoryEntityList);
     }
@@ -61,7 +69,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
         List<CategoryEntity> categoryEntityList = categoryEntityPage.getContent();
 
         if (categoryEntityList.isEmpty()) {
-            throw new CategoryNotFoundException();
+            throw new CategoryNotFoundByNameException();
         }
 
         return new CustomPage<>(

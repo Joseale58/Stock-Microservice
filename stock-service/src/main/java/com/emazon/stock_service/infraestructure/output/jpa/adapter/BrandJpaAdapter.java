@@ -3,8 +3,9 @@ package com.emazon.stock_service.infraestructure.output.jpa.adapter;
 import com.emazon.stock_service.domain.model.Brand;
 import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
+import com.emazon.stock_service.infraestructure.exception.BrandNotFOundByIdException;
 import com.emazon.stock_service.infraestructure.exception.CategoryAlreadyExistsException;
-import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundException;
+import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundByNameException;
 import com.emazon.stock_service.infraestructure.output.jpa.entity.BrandEntity;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.IBrandEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.IBrandRepository;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -22,6 +24,15 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
 
     private final IBrandRepository brandRepository;
     private final IBrandEntityMapper brandEntityMapper;
+
+    @Override
+    public Brand getBrandById(Long id) {
+        Optional<BrandEntity> brandEntityOptional = brandRepository.findById(id);
+        if(brandEntityOptional.isEmpty()) {
+            throw new BrandNotFOundByIdException();
+        }
+        return brandEntityMapper.toBrand(brandEntityOptional.get());
+    }
 
     @Override
     public CustomPage<Brand> getPaginatedBrands(Integer page, Integer pageSize, String order) {
@@ -36,7 +47,7 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
         List<BrandEntity> brandEntityList = brandEntityPage.getContent();
 
         if (brandEntityList.isEmpty()) {
-            throw new CategoryNotFoundException();
+            throw new CategoryNotFoundByNameException();
         }
 
         return new CustomPage<>(

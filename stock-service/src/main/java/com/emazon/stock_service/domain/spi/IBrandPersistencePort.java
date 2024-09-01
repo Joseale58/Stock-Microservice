@@ -5,6 +5,9 @@ import com.emazon.stock_service.domain.util.pageable.CustomPage;
 
 public interface IBrandPersistencePort {
 
+    //To show a brand by id
+    Brand getBrandById(Long id);
+
     //To paginate brands
     CustomPage<Brand> getPaginatedBrands(Integer page, Integer pageSize, String order);
 
