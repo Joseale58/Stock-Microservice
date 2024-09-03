@@ -1,12 +1,12 @@
 package com.emazon.stock_service.application.mapper;
-
-import com.emazon.stock_service.application.dto.CustomPageDto;
 import com.emazon.stock_service.application.dto.ProductDtoResponse;
 import com.emazon.stock_service.domain.model.Product;
-import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IProductDtoResponseMapper {
 
     //To ProductDtoResponse

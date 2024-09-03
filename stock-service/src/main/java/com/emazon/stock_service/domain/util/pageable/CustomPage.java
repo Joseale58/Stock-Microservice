@@ -20,6 +20,9 @@ public class CustomPage<T>{
         this.empty = empty;
     }
 
+    public CustomPage() {
+    }
+
     public List<T> getContent() {
         return content;
     }

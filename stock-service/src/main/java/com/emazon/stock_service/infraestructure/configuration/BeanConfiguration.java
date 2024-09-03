@@ -12,6 +12,7 @@ import com.emazon.stock_service.domain.usecase.CategoryUseCase;
 import com.emazon.stock_service.infraestructure.output.jpa.adapter.ProductJpaAdapter;
 import com.emazon.stock_service.infraestructure.output.jpa.adapter.BrandJpaAdapter;
 import com.emazon.stock_service.infraestructure.output.jpa.adapter.CategoryJpaAdapter;
+import com.emazon.stock_service.infraestructure.output.jpa.mapper.IPageMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.IProductEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.IBrandEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.ICategoryEntityMapper;
@@ -25,6 +26,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class BeanConfiguration {
+
+    //For all
+    private final IPageMapper pageMapper;
 
     //For Category
     private final ICategoryRepository categoryRepository;
@@ -54,17 +58,17 @@ public class BeanConfiguration {
         return new BrandUseCase(brandPersistencePort());
     }
 
-    //For Article
-    private final IProductRepository articleRepository;
-    private final IProductEntityMapper articleEntityMapper;
+    //For Product
+    private final IProductRepository productRepository;
+    private final IProductEntityMapper productEntityMapper;
 
     @Bean
-    IProductPersistencePort articlePersistencePort() {
-        return new ProductJpaAdapter(articleRepository, articleEntityMapper);
+    IProductPersistencePort productPersistencePort() {
+        return new ProductJpaAdapter(productRepository, productEntityMapper, categoryRepository, pageMapper);
     }
 
-    @Bean public IProductServicePort articleServicePort() {
-        return new ProductUseCase(articlePersistencePort(), categoryPersistencePort(), brandPersistencePort());
+    @Bean public IProductServicePort productServicePort() {
+        return new ProductUseCase(productPersistencePort(), categoryPersistencePort(), brandPersistencePort());
     }
 
 

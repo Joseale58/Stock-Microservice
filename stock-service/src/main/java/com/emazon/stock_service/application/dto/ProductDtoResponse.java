@@ -17,6 +17,6 @@ public class ProductDtoResponse {
     private Integer stock;
     private Double price;
     private BrandDto brand;
-    private List<CategoryDto> category;
+    private List<CategoryProductDtoResponse> category;
 
 }
