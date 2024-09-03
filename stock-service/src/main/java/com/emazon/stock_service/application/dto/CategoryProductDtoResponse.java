@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CategoryProductDtoResponse {
+    private Long id;
     private String name;
-    private String description;
 }
