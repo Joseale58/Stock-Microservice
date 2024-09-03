@@ -1,6 +1,9 @@
 package com.emazon.stock_service.application.handler;
 
+import com.emazon.stock_service.application.dto.CustomPageDto;
 import com.emazon.stock_service.application.dto.ProductDtoRequest;
+import com.emazon.stock_service.application.dto.ProductDtoResponse;
+import com.emazon.stock_service.application.mapper.IPageDtoMapper;
 import com.emazon.stock_service.application.mapper.IProductDtoRequestMapper;
 import com.emazon.stock_service.application.mapper.IProductDtoResponseMapper;
 import com.emazon.stock_service.domain.api.IProductServicePort;
@@ -19,14 +22,19 @@ import java.util.List;
 public class ProductHandler implements IProductHandler {
 
 
-    private final IProductServicePort articleServicePort;
-    private final IProductDtoRequestMapper articleDtoRequestMapper;
-    private final IProductDtoResponseMapper articleDtoResponseMapper;
+    private final IProductServicePort productServicePort;
+    private final IProductDtoRequestMapper productDtoRequestMapper;
+    private final IPageDtoMapper pageDtoMapper;
+
+    @Override
+    public CustomPageDto<ProductDtoResponse> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort) {
+        return pageDtoMapper.toProductDtoPageCustom(this.productServicePort.getPaginatedProducts(page, pageSize, order, sort));
+    }
 
     @Override
     public void saveProduct(ProductDtoRequest productDtoRequest) {
 
-        Product product = articleDtoRequestMapper.toProduct(productDtoRequest);
+        Product product = productDtoRequestMapper.toProduct(productDtoRequest);
 
         List<Category> categories = productDtoRequest.getCategoryId().stream()
                 .map(categoryId -> {
@@ -40,6 +48,6 @@ public class ProductHandler implements IProductHandler {
         brand.setId(productDtoRequest.getBrandId());
         product.setBrand(brand);
 
-        this.articleServicePort.save(product);
+        this.productServicePort.save(product);
     }
 }

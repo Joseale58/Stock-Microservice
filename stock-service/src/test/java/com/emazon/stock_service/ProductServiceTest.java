@@ -11,6 +11,7 @@ import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock_service.domain.spi.IProductPersistencePort;
 import com.emazon.stock_service.domain.usecase.ProductUseCase;
+import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,8 +19,9 @@ import org.mockito.Mockito;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class ProductServiceTest {
@@ -47,6 +49,41 @@ class ProductServiceTest {
         brand = new Brand(1L, "Nombre válido", "Descripción válida");
         product = new Product(1L, "Nombre válido", "Descripción válida", 10, 10D, brand, categoryList);
     }
+
+    //To get
+
+
+
+    @Test
+    void shouldThrowExceptionForInvalidPageNumber() {
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(-1, 10, "asc", "name"));
+    }
+
+    @Test
+    void shouldThrowExceptionForInvalidPageSize() {
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 0, "asc", "name"));
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 101, "asc", "name"));
+    }
+
+    @Test
+    void shouldThrowExceptionForInvalidOrder() {
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 10, "ascending", "name"));
+    }
+
+    @Test
+    void shouldThrowExceptionForInvalidSort() {
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 10, "asc", "color"));
+    }
+
+    @Test
+    void shouldHandleValidPaginationParameters() {
+        when(productPersistencePort.getPaginatedProducts(anyInt(), anyInt(), anyString(), anyString())).thenReturn(new CustomPage<>(List.of(product), 10L, 10, 0,true, false));
+        CustomPage<Product> result = productServicePort.getPaginatedProducts(0, 10, "asc", "name");
+        assertNotNull(result);
+        assertEquals(10, result.getTotalPages());
+    }
+
+    //To save
 
     @Test
      void shouldThrowMissingValueExceptionWhenNameIsNull() {
@@ -132,4 +169,21 @@ class ProductServiceTest {
 
         assertThrows(InvalidProductCreationException.class, () -> productServicePort.save(product));
     }
+
+    @Test
+    void shouldCreateProductSuccessfully() {
+        // Configurando mocks para devolver valores válidos
+        when(brandPersistencePort.getBrandById(anyLong())).thenReturn(brand);
+        when(categoryPersistencePort.getCategoryById(anyLong())).thenAnswer(invocation -> {
+            Long id = invocation.getArgument(0, Long.class);
+            return new Category(id, "Category " + id, "description");
+        });
+
+        // Llamada al método de prueba
+        assertDoesNotThrow(() -> productServicePort.save(product));
+
+        // Verificando que el producto fue guardado correctamente
+        verify(productPersistencePort).save(product);
+    }
+
 }

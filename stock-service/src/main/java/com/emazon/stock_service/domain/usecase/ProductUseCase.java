@@ -9,6 +9,7 @@ import com.emazon.stock_service.domain.model.Product;
 import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock_service.domain.spi.IProductPersistencePort;
+import com.emazon.stock_service.domain.util.pageable.CustomPage;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,14 +17,33 @@ import java.util.Set;
 
 public class ProductUseCase implements IProductServicePort {
 
-    private final IProductPersistencePort articlePersistencePort;
+    private final IProductPersistencePort productPersistencePort;
     private final ICategoryPersistencePort categoryPersistencePort;
     private final IBrandPersistencePort brandPersistencePort;
 
-    public ProductUseCase(IProductPersistencePort articlePersistencePort, ICategoryPersistencePort categoryPersistencePort, IBrandPersistencePort brandPersistencePort) {
-        this.articlePersistencePort = articlePersistencePort;
+    public ProductUseCase(IProductPersistencePort productPersistencePort, ICategoryPersistencePort categoryPersistencePort, IBrandPersistencePort brandPersistencePort) {
+        this.productPersistencePort = productPersistencePort;
         this.categoryPersistencePort = categoryPersistencePort;
         this.brandPersistencePort = brandPersistencePort;
+    }
+
+    @Override
+    public CustomPage<Product> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort) {
+        if(page < 0){
+            throw new IllegalArgumentException("El número de página debe ser mayor o igual a 0");
+        }
+        int maxPageSize = 100;
+        if(pageSize <= 0 || pageSize > maxPageSize){
+            throw new IllegalArgumentException("El tamaño de página debe ser mayor a 0 y menor o igual a " + maxPageSize);
+        }
+        if(!"asc".equalsIgnoreCase(order) && !"desc".equalsIgnoreCase(order)){
+            throw new IllegalArgumentException("El parámetro de orden debe ser 'asc' o 'desc'.");
+        }
+        if (!"name".equalsIgnoreCase(sort) && !"brand".equalsIgnoreCase(sort) && !"category".equalsIgnoreCase(sort)){
+            throw new IllegalArgumentException("El parámetro de ordenamiento debe ser 'id', 'name', 'price' o 'stock'.");
+        }
+
+        return this.productPersistencePort.getPaginatedProducts(page, pageSize, order, sort);
     }
 
     @Override
@@ -75,7 +95,7 @@ public class ProductUseCase implements IProductServicePort {
             }
         }
 
-        this.articlePersistencePort.save(product);
+        this.productPersistencePort.save(product);
     }
 
 }
