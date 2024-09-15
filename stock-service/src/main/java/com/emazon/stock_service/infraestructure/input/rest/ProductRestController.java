@@ -1,9 +1,6 @@
 package com.emazon.stock_service.infraestructure.input.rest;
 
-import com.emazon.stock_service.application.dto.BrandDto;
-import com.emazon.stock_service.application.dto.CustomPageDto;
-import com.emazon.stock_service.application.dto.ProductDtoRequest;
-import com.emazon.stock_service.application.dto.ProductDtoResponse;
+import com.emazon.stock_service.application.dto.*;
 import com.emazon.stock_service.application.handler.ProductHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +28,15 @@ public class ProductRestController {
     @PostMapping
     public ResponseEntity<String> saveProduct(@RequestBody ProductDtoRequest productDtoRequest) {
         productHandler.saveProduct(productDtoRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Se creó exitosamente la marca: " + productDtoRequest.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body("Se creó exitosamente el producto: " + productDtoRequest.getName());
+    }
+
+    //To update a product
+    @Operation(summary = "Update a product", description = "Update a product")
+    @PatchMapping
+    public ResponseEntity<String> updateProduct(@RequestBody UpdateStockDtoRequest updateStockDtoRequest) {
+        productHandler.updateProduct(updateStockDtoRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

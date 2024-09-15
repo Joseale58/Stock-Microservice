@@ -36,10 +36,12 @@ public class SecurityConfig {
                     //Configurar endpoints públicos
                     http.requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll();
                     http.requestMatchers(HttpMethod.POST, "/products/**").hasAuthority("admin");
+                    http.requestMatchers(HttpMethod.PATCH, "/products/**").hasAnyAuthority("admin", "aux_bodega");
                     http.requestMatchers(HttpMethod.POST,"/categories/**").hasAuthority("admin");
                     http.requestMatchers(HttpMethod.POST,"/brands/**").hasAuthority("admin");
+                    http.anyRequest().permitAll();
                     //Configurar cualquier otro endpoint (Zero trust)
-                    http.anyRequest().denyAll(); //Niega todos los otros request a endpoints no configurados
+//                    http.anyRequest().denyAll(); //Niega todos los otros request a endpoints no configurados
                     //http.anyRequest().authenticated(); // Niegas los otros request a endpoints solo si no estan autenticados
                 })
                 .addFilterBefore(new JwtTokenValidatorFilter(jwtUtils), BasicAuthenticationFilter.class)

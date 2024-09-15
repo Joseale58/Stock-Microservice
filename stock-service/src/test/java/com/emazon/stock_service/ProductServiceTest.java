@@ -12,6 +12,7 @@ import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock_service.domain.spi.IProductPersistencePort;
 import com.emazon.stock_service.domain.usecase.ProductUseCase;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
+import com.emazon.stock_service.infraestructure.exception.ProductsNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -184,6 +185,43 @@ class ProductServiceTest {
 
         // Verificando que el producto fue guardado correctamente
         verify(productPersistencePort).save(product);
+    }
+
+    @Test
+    void shouldThrowMinimumDataConstraintViolationExceptionWhenQuantityIsNegative() {
+        // Arrange
+        Long productId = 1L;
+        Integer negativeQuantity = -5;
+
+        // Act & Assert
+        assertThrows(MinimumDataConstraintViolationException.class, () -> productServicePort.update(productId, negativeQuantity));
+    }
+
+    @Test
+    void shouldThrowProductsNotFoundExceptionWhenProductDoesNotExist() {
+        // Arrange
+        Long productId = 1L;
+        Integer validQuantity = 5;
+
+        when(productPersistencePort.getProductById(productId)).thenReturn(null);
+
+        // Act & Assert
+        assertThrows(ProductsNotFoundException.class, () -> productServicePort.update(productId, validQuantity));
+    }
+
+    @Test
+    void shouldUpdateProductSuccessfullyWhenProductExistsAndQuantityIsValid() {
+        // Arrange
+        Long productId = 1L;
+        Integer validQuantity = 10;
+
+        when(productPersistencePort.getProductById(productId)).thenReturn(product);
+
+        // Act & Assert
+        assertDoesNotThrow(() -> productServicePort.update(productId, validQuantity));
+
+        // Verify that the product update is called
+        verify(productPersistencePort).update(productId, validQuantity);
     }
 
 }

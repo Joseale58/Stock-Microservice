@@ -10,6 +10,7 @@ import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock_service.domain.spi.IProductPersistencePort;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
+import com.emazon.stock_service.infraestructure.exception.ProductsNotFoundException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -96,6 +97,17 @@ public class ProductUseCase implements IProductServicePort {
         }
 
         this.productPersistencePort.save(product);
+    }
+
+    @Override
+    public void update(Long productId, Integer quantity) {
+        if (quantity < 0) {
+            throw new MinimumDataConstraintViolationException("cantidad", 0);
+        }
+        if(this.productPersistencePort.getProductById(productId) == null){
+            throw new ProductsNotFoundException();
+        }
+        this.productPersistencePort.update(productId, quantity);
     }
 
 }
