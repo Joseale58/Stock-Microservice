@@ -3,6 +3,7 @@ package com.emazon.stock_service.application.handler;
 import com.emazon.stock_service.application.dto.CustomPageDto;
 import com.emazon.stock_service.application.dto.ProductDtoRequest;
 import com.emazon.stock_service.application.dto.ProductDtoResponse;
+import com.emazon.stock_service.application.dto.UpdateStockDtoRequest;
 import com.emazon.stock_service.application.mapper.IPageDtoMapper;
 import com.emazon.stock_service.application.mapper.IProductDtoRequestMapper;
 import com.emazon.stock_service.application.mapper.IProductDtoResponseMapper;
@@ -49,5 +50,10 @@ public class ProductHandler implements IProductHandler {
         product.setBrand(brand);
 
         this.productServicePort.save(product);
+    }
+
+    @Override
+    public void updateProduct(UpdateStockDtoRequest updateStockDtoRequest) {
+        this.productServicePort.update(updateStockDtoRequest.getProductId(), updateStockDtoRequest.getQuantity());
     }
 }

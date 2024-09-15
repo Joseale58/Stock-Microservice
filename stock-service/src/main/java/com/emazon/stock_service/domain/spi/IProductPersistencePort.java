@@ -9,4 +9,8 @@ public interface IProductPersistencePort {
     CustomPage<Product> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort);
 
     void save(Product product);
+
+    void update(Long productId, Integer quantity);
+
+    Product getProductById(Long productId);
 }

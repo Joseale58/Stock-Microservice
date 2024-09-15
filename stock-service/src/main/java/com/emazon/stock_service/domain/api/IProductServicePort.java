@@ -10,4 +10,7 @@ public interface IProductServicePort {
 
     //To create a new product
     void save(Product product);
+
+    //To update a product
+    void update(Long productId, Integer quantity);
 }
