@@ -53,6 +53,13 @@ public class ControllerAdvisor {
                 .body(Collections.singletonMap(MESSAGE,  ExceptionResponse.PRODUCTS_NOT_FOUND.getMessage()));
     }
 
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleProductAlreadyExistsException(
+            ProductAlreadyExistsException productAlreadyExistsException){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Collections.singletonMap(MESSAGE,  ExceptionResponse.PRODUCT_ALREADY_EXISTS.getMessage()));
+    }
+
     //Exceptions handling from domain layer
 
     @ExceptionHandler(DataConstraintViolationException.class)

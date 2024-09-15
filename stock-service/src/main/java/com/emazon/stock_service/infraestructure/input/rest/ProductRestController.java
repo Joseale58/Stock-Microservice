@@ -5,6 +5,8 @@ import com.emazon.stock_service.application.dto.CustomPageDto;
 import com.emazon.stock_service.application.dto.ProductDtoRequest;
 import com.emazon.stock_service.application.dto.ProductDtoResponse;
 import com.emazon.stock_service.application.handler.ProductHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,14 @@ public class ProductRestController {
     private final ProductHandler productHandler;
 
     //To get all products
+    @Operation(summary = "Get all products", description = "Get all products paginated with brand and category (only showing id and name for this last)")
     @GetMapping("/{page}/{pageSize}/{order}/{sort}")
-    public ResponseEntity<CustomPageDto<ProductDtoResponse>> getAllProducts(@PathVariable Integer page, @PathVariable Integer pageSize, @PathVariable String order, @PathVariable String sort) {
+    public ResponseEntity<CustomPageDto<ProductDtoResponse>> getAllProducts(@PathVariable @Parameter(description = "Page number to retrieve")Integer page, @PathVariable @Parameter(description = "Amount of elements per page") Integer pageSize, @PathVariable @Parameter(description = "Ascending or descending", example = "asc,desc") String order, @PathVariable @Parameter(description = "Sort by field", example = "name, brand, category") String sort) {
         return ResponseEntity.ok(productHandler.getPaginatedProducts(page,pageSize, order, sort));
     }
 
     //To create a new product
+    @Operation(summary = "Create a new product", description = "Create a new product")
     @PostMapping
     public ResponseEntity<String> saveProduct(@RequestBody ProductDtoRequest productDtoRequest) {
         productHandler.saveProduct(productDtoRequest);

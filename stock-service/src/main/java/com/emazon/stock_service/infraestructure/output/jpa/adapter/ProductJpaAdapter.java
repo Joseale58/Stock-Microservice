@@ -3,6 +3,7 @@ package com.emazon.stock_service.infraestructure.output.jpa.adapter;
 import com.emazon.stock_service.domain.model.Product;
 import com.emazon.stock_service.domain.spi.IProductPersistencePort;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
+import com.emazon.stock_service.infraestructure.exception.ProductAlreadyExistsException;
 import com.emazon.stock_service.infraestructure.exception.ProductsNotFoundException;
 import com.emazon.stock_service.infraestructure.output.jpa.entity.CategoryEntity;
 import com.emazon.stock_service.infraestructure.output.jpa.entity.ProductEntity;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class ProductJpaAdapter implements IProductPersistencePort {
     public void save(Product product) {
 
         if (this.productRepository.findByName(product.getName()).isPresent()) {
-            throw new RuntimeException("Este producto ya existe");
+            throw new ProductAlreadyExistsException();
         }
 
         ProductEntity productEntity = productEntityMapper.toProductEntity(product);

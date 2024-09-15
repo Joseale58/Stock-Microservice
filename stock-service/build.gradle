@@ -39,9 +39,12 @@ dependencies {
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2' // Reemplaza por la última versión
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0' // Para Spring MVC
-
 	implementation 'io.github.cdimascio:dotenv-java:3.0.0' //To load .env vars
-
+	// JWT
+	implementation 'com.auth0:java-jwt:4.4.0'
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
