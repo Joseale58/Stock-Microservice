@@ -1,6 +1,8 @@
 package com.emazon.stock_service.infraestructure.output.security.utils;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.emazon.stock_service.utils.Constants;
+import com.emazon.stock_service.utils.SecurityConstants;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,14 +33,11 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@Nonnull HttpServletRequest request,@Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain) throws ServletException, IOException {
         String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if(jwtToken != null){
-            jwtToken = jwtToken.substring(7); // Elimina la palabra Bearer
+            jwtToken = jwtToken.substring(SecurityConstants.CHARACTER_NUMBER_SEVEN);
             DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
-            //Si el token es valido, extrae el nombre de usuario y el rol (credenciales)
             String username = jwtUtils.extractUsername(decodedJWT);
-            String role = decodedJWT.getClaim("role").asString();
+            String role = decodedJWT.getClaim(SecurityConstants.CLAIM_ROLE).asString();
 
-
-            //Convertimos el rol a una lista de GrantedAuthority
             Collection<? extends GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(role);
 
             SecurityContext context = SecurityContextHolder.getContext();
@@ -47,7 +46,6 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
             SecurityContextHolder.setContext(context);
 
         }
-        // Si el token no viene, continua con el siguiente filtro
         filterChain.doFilter(request, response);
     }
 

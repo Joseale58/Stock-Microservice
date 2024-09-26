@@ -3,12 +3,13 @@ package com.emazon.stock_service.infraestructure.output.jpa.adapter;
 import com.emazon.stock_service.domain.model.Brand;
 import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
-import com.emazon.stock_service.infraestructure.exception.BrandNotFOundByIdException;
+import com.emazon.stock_service.infraestructure.exception.BrandNotFoundByIdException;
 import com.emazon.stock_service.infraestructure.exception.CategoryAlreadyExistsException;
 import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundByNameException;
 import com.emazon.stock_service.infraestructure.output.jpa.entity.BrandEntity;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.IBrandEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.IBrandRepository;
+import com.emazon.stock_service.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,18 +30,18 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
     public Brand getBrandById(Long id) {
         Optional<BrandEntity> brandEntityOptional = brandRepository.findById(id);
         if(brandEntityOptional.isEmpty()) {
-            throw new BrandNotFOundByIdException();
+            throw new BrandNotFoundByIdException();
         }
         return brandEntityMapper.toBrand(brandEntityOptional.get());
     }
 
     @Override
     public CustomPage<Brand> getPaginatedBrands(Integer page, Integer pageSize, String order) {
-        final Pageable pageable; // Declare var out of if-block
-        if(order.equals("asc")){
-            pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "name"));
+        final Pageable pageable;
+        if(order.equals(Constants.PAGE_ASC_OPTION)){
+            pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, Constants.PAGE_NAME_OPTION));
         } else {
-            pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "name"));
+            pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, Constants.PAGE_NAME_OPTION));
         }
 
         Page<BrandEntity> brandEntityPage = brandRepository.findAll(pageable);
@@ -55,16 +56,15 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
                 brandEntityPage.getTotalElements(),
                 brandEntityPage.getTotalPages(),
                 brandEntityPage.getNumber(),
-                order.equals("asc"),
+                order.equals(Constants.PAGE_ASC_OPTION),
                 brandEntityPage.isEmpty()
         );
     }
 
     @Override
     public void save(Brand brand) {
-        //Validating that the category doesn't exist at DB
         if(brandRepository.findByName(brand.getName()).isPresent()){
-            throw new CategoryAlreadyExistsException("Esta marca: " + brand.getName() + ", ya existe");
+            throw new CategoryAlreadyExistsException(Constants.BRAND_ALREADY_EXISTS_EXCEPTION);
         }
         brandRepository.save(brandEntityMapper.toBrandEntity(brand));
     }

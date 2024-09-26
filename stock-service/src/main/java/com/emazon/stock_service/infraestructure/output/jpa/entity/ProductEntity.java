@@ -19,7 +19,6 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //Constraints DB
     @Column (unique = true)
     private String name;
 

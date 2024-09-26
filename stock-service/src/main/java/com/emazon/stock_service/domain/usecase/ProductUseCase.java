@@ -1,9 +1,9 @@
 package com.emazon.stock_service.domain.usecase;
 
 import com.emazon.stock_service.domain.api.IProductServicePort;
+import com.emazon.stock_service.domain.exception.DataConstraintViolationException;
 import com.emazon.stock_service.domain.exception.InvalidProductCreationException;
 import com.emazon.stock_service.domain.exception.MissingValueException;
-import com.emazon.stock_service.domain.exception.MinimumDataConstraintViolationException;
 import com.emazon.stock_service.domain.model.Category;
 import com.emazon.stock_service.domain.model.Product;
 import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
@@ -11,6 +11,7 @@ import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock_service.domain.spi.IProductPersistencePort;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import com.emazon.stock_service.infraestructure.exception.ProductsNotFoundException;
+import com.emazon.stock_service.utils.Constants;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,18 +31,17 @@ public class ProductUseCase implements IProductServicePort {
 
     @Override
     public CustomPage<Product> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort) {
-        if(page < 0){
-            throw new IllegalArgumentException("El número de página debe ser mayor o igual a 0");
+        if (page < Constants.PAGE_MINIMUM_INDEX) {
+            throw new IllegalArgumentException(Constants.PAGE_MUST_BE_POSITIVE_EXCEPTION);
         }
-        int maxPageSize = 100;
-        if(pageSize <= 0 || pageSize > maxPageSize){
-            throw new IllegalArgumentException("El tamaño de página debe ser mayor a 0 y menor o igual a " + maxPageSize);
+        if (pageSize <= Constants.PAGE_MIN_SIZE_ILLEGAL || pageSize > Constants.PAGE_MAX_SIZE) {
+            throw new IllegalArgumentException(Constants.PAGE_SIZE_RANGE_EXCEPTION);
         }
-        if(!"asc".equalsIgnoreCase(order) && !"desc".equalsIgnoreCase(order)){
-            throw new IllegalArgumentException("El parámetro de orden debe ser 'asc' o 'desc'.");
+        if (!Constants.PAGE_ASC_OPTION.equalsIgnoreCase(order) && !Constants.PAGE_DESC_OPTION.equalsIgnoreCase(order)) {
+            throw new IllegalArgumentException(Constants.PAGE_ORDER_OPTION_EXCEPTION);
         }
-        if (!"name".equalsIgnoreCase(sort) && !"brand".equalsIgnoreCase(sort) && !"category".equalsIgnoreCase(sort)){
-            throw new IllegalArgumentException("El parámetro de ordenamiento debe ser 'id', 'name', 'price' o 'stock'.");
+        if (!Constants.PAGE_NAME_OPTION.equalsIgnoreCase(sort) && !Constants.PAGE_BRAND_OPTION.equalsIgnoreCase(sort) && !Constants.PAGE_CATEGORY_OPTION.equalsIgnoreCase(sort)){
+            throw new IllegalArgumentException(Constants.PAGE_SORT_OPTION_EXCEPTION);
         }
 
         return this.productPersistencePort.getPaginatedProducts(page, pageSize, order, sort);
@@ -50,49 +50,49 @@ public class ProductUseCase implements IProductServicePort {
     @Override
     public void save(Product product) {
         if (product.getName() == null || product.getName().isEmpty()) {
-            throw new MissingValueException("nombre de artículo");
+            throw new MissingValueException(Constants.MISSING_PRODUCT_NAME_EXCEPTION);
         }
         if (product.getDescription() == null || product.getDescription().isEmpty()) {
-            throw new MissingValueException("descripción");
+            throw new MissingValueException(Constants.MISSING_PRODUCT_DESCRIPTION_EXCEPTION);
         }
         if (product.getStock() == null) {
-            throw new MissingValueException("cantidad");
+            throw new MissingValueException(Constants.MISSING_PRODUCT_STOCK_EXCEPTION);
         }
         if (product.getPrice() == null) {
-            throw new MissingValueException("precio");
+            throw new MissingValueException(Constants.MISSING_PRODUCT_PRICE_EXCEPTION);
         }
         if (product.getBrand().getId() == null){
-            throw new MissingValueException("marca");
+            throw new MissingValueException(Constants.MISSING_PRODUCT_BRAND_EXCEPTION);
         }
         if (product.getCategories() == null || product.getCategories().isEmpty()) {
-            throw new MissingValueException("categorías");
+            throw new MissingValueException(Constants.MISSING_PRODUCT_CATEGORIES_EXCEPTION);
         }
-        if (product.getStock() < 0) {
-            throw new MinimumDataConstraintViolationException("cantidad", 0);
+        if (product.getStock() < Constants.INVALID_MINIMUM_STOCK_AMOUNT) {
+            throw new DataConstraintViolationException(Constants.INVALID_MINIMUM_STOCK_AMOUNT_EXCEPTION);
         }
-        if (product.getPrice() < 0) {
-            throw new MinimumDataConstraintViolationException("precio", 0);
+        if (product.getPrice() < Constants.INVALID_MINIMUM_PRICE_AMOUNT) {
+            throw new DataConstraintViolationException(Constants.INVALID_MINIMUM_PRICE_AMOUNT_EXCEPTION);
         }
 
         if (this.brandPersistencePort.getBrandById(product.getBrand().getId()) == null) {
-            throw new InvalidProductCreationException("La marca con id " + product.getBrand().getId() + " no existe.");
+            throw new InvalidProductCreationException(Constants.BRAND_INVALID_ID_EXCEPTION);
         }
         List<Category> categories = product.getCategories();
 
         if (categories.isEmpty() || categories.size() > 3) {
-            throw new InvalidProductCreationException("El producto debe tener entre 1 y 3 categorías.");
+            throw new InvalidProductCreationException(Constants.CATEGORY_INVALID_AMOUNT_EXCEPTION);
         }
 
         Set<Long> categoryIds = new HashSet<>();
         for (Category category : categories) {
             if(category.getId() == null){
-                throw new MissingValueException("id de categoría");
+                throw new MissingValueException(Constants.MISSING_PRODUCT_CATEGORIES_EXCEPTION);
             }
             if (this.categoryPersistencePort.getCategoryById(category.getId()) == null) {
-                throw new InvalidProductCreationException("La categoría con id " + category.getId() + " no existe.");
+                throw new InvalidProductCreationException(Constants.CATEGORY_INVALID_ID_EXCEPTION);
             }
             if (!categoryIds.add(category.getId())) {
-                throw new InvalidProductCreationException("El producto no puede tener categorías repetidas.");
+                throw new InvalidProductCreationException(Constants.CATEGORY_DUPLICATED_EXCEPTION);
             }
         }
 
@@ -101,8 +101,8 @@ public class ProductUseCase implements IProductServicePort {
 
     @Override
     public void update(Long productId, Integer quantity) {
-        if (quantity < 0) {
-            throw new MinimumDataConstraintViolationException("cantidad", 0);
+        if (quantity < Constants.INVALID_MINIMUM_STOCK_AMOUNT) {
+            throw new DataConstraintViolationException(Constants.INVALID_MINIMUM_STOCK_AMOUNT_EXCEPTION);
         }
         if(this.productPersistencePort.getProductById(productId) == null){
             throw new ProductsNotFoundException();

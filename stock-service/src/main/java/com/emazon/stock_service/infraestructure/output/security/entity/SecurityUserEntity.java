@@ -30,7 +30,6 @@ public class SecurityUserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convert the role to a SimpleGrantedAuthority object and return it as a collection
         return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
 
