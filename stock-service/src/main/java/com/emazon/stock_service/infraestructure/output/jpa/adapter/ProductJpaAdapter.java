@@ -11,6 +11,7 @@ import com.emazon.stock_service.infraestructure.output.jpa.mapper.IPageMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.IProductEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.ICategoryRepository;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.IProductRepository;
+import com.emazon.stock_service.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,14 +35,11 @@ public class ProductJpaAdapter implements IProductPersistencePort {
     public CustomPage<Product> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort) {
         Sort.Direction direction = Sort.Direction.fromString(order);
         Pageable pageable;
-        if ("category".equalsIgnoreCase(sort)) {
-            // Si el campo de ordenación es "category", hacer el join y ordenar por nombre de categoría
-            pageable = PageRequest.of(page, pageSize, Sort.by(direction, "category.name")); // Reemplaza "categories.name" con el nombre correcto del campo en la relación Category
-        } else if ("brand".equalsIgnoreCase(sort)) {
-            // Si el campo de ordenación es "brand", hacer el join y ordenar por nombre de la marca
-            pageable = PageRequest.of(page, pageSize, Sort.by(direction, "brand.name")); // Asumiendo que 'name' es el campo en la entidad Brand por el que deseas ordenar
+        if (Constants.PAGE_CATEGORY_OPTION.equalsIgnoreCase(sort)) {
+            pageable = PageRequest.of(page, pageSize, Sort.by(direction, Constants.PAGE_CATEGORY_SORT_OPTION));
+        } else if (Constants.PAGE_BRAND_OPTION.equalsIgnoreCase(sort)) {
+            pageable = PageRequest.of(page, pageSize, Sort.by(direction, Constants.PAGE_BRAND_SORT_OPTION));
         } else {
-            // Si es otro campo, ordenar normalmente
             pageable = PageRequest.of(page, pageSize, Sort.by(direction, sort));
         }
         Page<ProductEntity> productEntityPage = productRepository.findAll(pageable);
@@ -65,10 +63,9 @@ public class ProductJpaAdapter implements IProductPersistencePort {
             throw new ProductAlreadyExistsException();
         }
         ProductEntity productEntity = productEntityMapper.toProductEntity(product);
-        //Is necessary to loop through the categories and get the category from the DB to save at a list and then set it to the product
         List<CategoryEntity> categoryEntities = product.getCategories().stream()
                 .map(category -> categoryRepository.findById(category.getId())
-                        .orElseThrow(() -> new IllegalArgumentException("Category with ID " + category.getId() + " not found")))
+                        .orElseThrow(() -> new IllegalArgumentException(Constants.CATEGORY_INVALID_ID_EXCEPTION)))
                 .toList();
         productEntity.setCategory(categoryEntities);
         this.productRepository.save(productEntity);

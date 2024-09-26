@@ -1,5 +1,6 @@
 package com.emazon.stock_service.infraestructure.output.jpa.entity;
 
+import com.emazon.stock_service.utils.Constants;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +19,9 @@ public class BrandEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //Constraints DB
-    @Column (unique = true, length = 50)
+    @Column (unique = true, length = Constants.MAX_BRAND_NAME_LENGTH )
     private String name;
 
-    @Column (length = 120)
+    @Column (length = Constants.MAX_BRAND_DESCRIPTION_LENGTH)
     private String description;
 }

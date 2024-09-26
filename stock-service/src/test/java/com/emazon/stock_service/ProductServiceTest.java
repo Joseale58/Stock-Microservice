@@ -1,8 +1,8 @@
 package com.emazon.stock_service;
 
 import com.emazon.stock_service.domain.api.IProductServicePort;
+import com.emazon.stock_service.domain.exception.DataConstraintViolationException;
 import com.emazon.stock_service.domain.exception.InvalidProductCreationException;
-import com.emazon.stock_service.domain.exception.MinimumDataConstraintViolationException;
 import com.emazon.stock_service.domain.exception.MissingValueException;
 import com.emazon.stock_service.domain.model.Brand;
 import com.emazon.stock_service.domain.model.Category;
@@ -51,10 +51,6 @@ class ProductServiceTest {
         product = new Product(1L, "Nombre válido", "Descripción válida", 10, 10D, brand, categoryList);
     }
 
-    //To get
-
-
-
     @Test
     void shouldThrowExceptionForInvalidPageNumber() {
         assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(-1, 10, "asc", "name"));
@@ -84,7 +80,6 @@ class ProductServiceTest {
         assertEquals(10, result.getTotalPages());
     }
 
-    //To save
 
     @Test
      void shouldThrowMissingValueExceptionWhenNameIsNull() {
@@ -108,10 +103,10 @@ class ProductServiceTest {
     }
 
     @Test
-     void shouldThrowMinimumDataConstraintViolationExceptionWhenStockIsNegative() {
+     void shouldThrowDataConstraintViolationExceptionWhenStockIsNegative() {
         product.setStock(-1);
 
-        assertThrows(MinimumDataConstraintViolationException.class, () -> productServicePort.save(product));
+        assertThrows(DataConstraintViolationException.class, () -> productServicePort.save(product));
     }
 
     @Test
@@ -122,10 +117,10 @@ class ProductServiceTest {
     }
 
     @Test
-     void shouldThrowMinimumDataConstraintViolationExceptionWhenPriceIsNegative() {
+     void shouldThrowDataConstraintViolationExceptionWhenPriceIsNegative() {
         product.setPrice(-1D);
 
-        assertThrows(MinimumDataConstraintViolationException.class, () -> productServicePort.save(product));
+        assertThrows(DataConstraintViolationException.class, () -> productServicePort.save(product));
     }
 
     @Test
@@ -144,7 +139,6 @@ class ProductServiceTest {
 
     @Test
      void shouldThrowInvalidProductCreationExceptionWhenCategoriesExceedLimit() {
-        // Crear una lista con más de 3 categorías
         Category category1 = new Category(1L, "Category 1", "description");
         Category category2 = new Category(2L, "Category 2", "description");
         Category category3 = new Category(3L, "Category 3","description");
@@ -173,54 +167,44 @@ class ProductServiceTest {
 
     @Test
     void shouldCreateProductSuccessfully() {
-        // Configurando mocks para devolver valores válidos
         when(brandPersistencePort.getBrandById(anyLong())).thenReturn(brand);
         when(categoryPersistencePort.getCategoryById(anyLong())).thenAnswer(invocation -> {
             Long id = invocation.getArgument(0, Long.class);
             return new Category(id, "Category " + id, "description");
         });
 
-        // Llamada al método de prueba
         assertDoesNotThrow(() -> productServicePort.save(product));
 
-        // Verificando que el producto fue guardado correctamente
         verify(productPersistencePort).save(product);
     }
 
     @Test
-    void shouldThrowMinimumDataConstraintViolationExceptionWhenQuantityIsNegative() {
-        // Arrange
+    void shouldThrowDataConstraintViolationExceptionWhenQuantityIsNegative() {
         Long productId = 1L;
         Integer negativeQuantity = -5;
 
-        // Act & Assert
-        assertThrows(MinimumDataConstraintViolationException.class, () -> productServicePort.update(productId, negativeQuantity));
+        assertThrows(DataConstraintViolationException.class, () -> productServicePort.update(productId, negativeQuantity));
     }
 
     @Test
     void shouldThrowProductsNotFoundExceptionWhenProductDoesNotExist() {
-        // Arrange
         Long productId = 1L;
         Integer validQuantity = 5;
 
         when(productPersistencePort.getProductById(productId)).thenReturn(null);
 
-        // Act & Assert
         assertThrows(ProductsNotFoundException.class, () -> productServicePort.update(productId, validQuantity));
     }
 
     @Test
     void shouldUpdateProductSuccessfullyWhenProductExistsAndQuantityIsValid() {
-        // Arrange
         Long productId = 1L;
         Integer validQuantity = 10;
 
         when(productPersistencePort.getProductById(productId)).thenReturn(product);
 
-        // Act & Assert
         assertDoesNotThrow(() -> productServicePort.update(productId, validQuantity));
 
-        // Verify that the product update is called
         verify(productPersistencePort).update(productId, validQuantity);
     }
 

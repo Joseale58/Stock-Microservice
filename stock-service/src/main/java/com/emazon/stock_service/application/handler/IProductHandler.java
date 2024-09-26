@@ -4,7 +4,6 @@ import com.emazon.stock_service.application.dto.CustomPageDto;
 import com.emazon.stock_service.application.dto.ProductDtoRequest;
 import com.emazon.stock_service.application.dto.ProductDtoResponse;
 import com.emazon.stock_service.application.dto.UpdateStockDtoRequest;
-import com.emazon.stock_service.domain.util.pageable.CustomPage;
 
 public interface IProductHandler {
 

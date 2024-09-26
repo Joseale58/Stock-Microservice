@@ -2,9 +2,9 @@ package com.emazon.stock_service.infraestructure.exceptionhandler;
 
 import com.emazon.stock_service.domain.exception.DataConstraintViolationException;
 import com.emazon.stock_service.domain.exception.InvalidProductCreationException;
-import com.emazon.stock_service.domain.exception.MinimumDataConstraintViolationException;
 import com.emazon.stock_service.domain.exception.MissingValueException;
 import com.emazon.stock_service.infraestructure.exception.*;
+import com.emazon.stock_service.utils.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,7 +16,7 @@ import java.util.Map;
 @ControllerAdvice
 public class ControllerAdvisor {
 
-    private static final String MESSAGE = "Mensaje:";
+    private static final String MESSAGE = Constants.EXCEPTION_MESSAGE;
 
     @ExceptionHandler(CategoryAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleCategoryAlreadyExistsException(
@@ -39,9 +39,9 @@ public class ControllerAdvisor {
                 .body(Collections.singletonMap(MESSAGE,  ExceptionResponse.CATEGORY_NOT_FOUND_BY_ID.getMessage()));
     }
 
-    @ExceptionHandler(BrandNotFOundByIdException.class)
+    @ExceptionHandler(BrandNotFoundByIdException.class)
     public ResponseEntity<Map<String, String>> handleBrandNotFoundException(
-            BrandNotFOundByIdException brandNotFOundByIdException){
+            BrandNotFoundByIdException brandNotFOundByIdException){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Collections.singletonMap(MESSAGE,  ExceptionResponse.BRAND_NOT_FOUND_BY_ID.getMessage()));
     }
@@ -78,13 +78,6 @@ public class ControllerAdvisor {
                 .body(Collections.singletonMap(MESSAGE, missingValueException.getMessage()));
     }
 
-    @ExceptionHandler(MinimumDataConstraintViolationException.class)
-    public ResponseEntity<Map<String, String>> handleMinimumDataConstraintViolationException(
-            MinimumDataConstraintViolationException minimumDataConstraintViolationException)
-    {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Collections.singletonMap(MESSAGE, minimumDataConstraintViolationException.getMessage()));
-    }
 
     @ExceptionHandler(InvalidProductCreationException.class)
     public ResponseEntity<Map<String, String>> handleInvalidCategoryException(

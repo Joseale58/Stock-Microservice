@@ -2,7 +2,6 @@ package com.emazon.stock_service.infraestructure.output.jpa.repository;
 
 import com.emazon.stock_service.infraestructure.output.jpa.entity.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;

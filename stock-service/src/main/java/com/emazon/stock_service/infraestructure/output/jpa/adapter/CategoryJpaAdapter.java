@@ -9,6 +9,7 @@ import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundByName
 import com.emazon.stock_service.infraestructure.output.jpa.entity.CategoryEntity;
 import com.emazon.stock_service.infraestructure.output.jpa.mapper.ICategoryEntityMapper;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.ICategoryRepository;
+import com.emazon.stock_service.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +26,6 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     private final ICategoryEntityMapper categoryEntityMapper;
 
 
-    //To show a category by id
     @Override
     public Category getCategoryById(Long id) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepository.findById(id);
@@ -35,7 +35,6 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
         return categoryEntityMapper.toCategory(categoryEntityOptional.get());
     }
 
-    //To show a category by name
     @Override
     public Category getCategoryByName(String name) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepository.findByName(name);
@@ -45,7 +44,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
         return categoryEntityMapper.toCategory(categoryEntityOptional.get());
     }
 
-    //To show all categories
+
     @Override
     public List<Category> getAllCategories() {
         List< CategoryEntity> categoryEntityList = categoryRepository.findAll();
@@ -55,14 +54,14 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
         return categoryEntityMapper.toCategoryList(categoryEntityList);
     }
 
-    //To paginate categories
+
     @Override
     public CustomPage<Category> getPaginatedCategories(Integer page, Integer pageSize, String order) {
-        final Pageable pageable; // Declare var out of if-block
-        if(order.equals("asc")){
-            pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "name"));
+        final Pageable pageable;
+        if(order.equals(Constants.PAGE_ASC_OPTION)){
+            pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC,  Constants.PAGE_NAME_OPTION));
         } else {
-            pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "name"));
+            pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC,  Constants.PAGE_NAME_OPTION));
         }
 
         Page<CategoryEntity> categoryEntityPage = categoryRepository.findAll(pageable);
@@ -77,19 +76,17 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
                 categoryEntityPage.getTotalElements(),
                 categoryEntityPage.getTotalPages(),
                 categoryEntityPage.getNumber(),
-                order.equals("asc"),
+                order.equals(Constants.PAGE_ASC_OPTION),
                 categoryEntityPage.isEmpty()
         );
     }
 
 
-    //To create a new category
     @Override
     public void save(Category category) {
 
-        //Validating that the category doesn't exist at DB
         if(categoryRepository.findByName(category.getName()).isPresent()){
-            throw new CategoryAlreadyExistsException("Ya existe una categoría con ese nombre");
+            throw new CategoryAlreadyExistsException(Constants.CATEGORY_ALREADY_EXISTS_EXCEPTION);
         }
         categoryRepository.save(categoryEntityMapper.toCategoryEntity(category));
     }

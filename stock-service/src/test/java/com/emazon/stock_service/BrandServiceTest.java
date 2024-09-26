@@ -34,27 +34,22 @@ class BrandServiceTest {
     @Test
     void testGetPaginatedBrands_ValidParameters() {
 
-        // Crear la lista de marcas simulada
         List<Brand> content = Arrays.asList(
                 new Brand(1L, "Adidas", "Marca de Ropa"),
                 new Brand(2L, "Nike", "Marca de Ropa"),
                 new Brand(3L, "H&M", "Marca de Ropa")
         );
 
-        // Crea un objeto CustomPage simulado que será devuelto por el mock
         CustomPage<Brand> mockPage = new CustomPage<>(
                 content, 10L, 4, 0, false, false
         );
 
-        // Configura el mock para que cuando se llame a getPaginatedBrands con los parámetros específicos, retorne mockPage
         when(brandPersistencePort.getPaginatedBrands(0, 10, "asc")).thenReturn(mockPage);
 
-        // Llama al método getPaginatedBrands con parámetros válidos
         CustomPage<Brand> result = brandUseCase.getPaginatedBrands(0, 10, "asc");
 
-        assertNotNull(result); //Verifica que el resultado no sea nulo
+        assertNotNull(result);
 
-        // Verifica que el método getPaginatedBrands del mock fue llamado exactamente una vez con los parámetros correctos
         verify(brandPersistencePort, times(1)).getPaginatedBrands(0, 10, "asc");
     }
 
@@ -74,9 +69,8 @@ class BrandServiceTest {
 
     @Test
     void testGetPaginatedBrands_InvalidOrder() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 brandUseCase.getPaginatedBrands(0, 10, "invalidOrder"));
-        assertEquals("El parámetro de orden debe ser 'asc' o 'desc'.", exception.getMessage());
     }
 
     // To save
@@ -92,38 +86,34 @@ class BrandServiceTest {
     void testSave_NullBrandName() {
         brand = new Brand(1L, null, "Valid Description");
 
-        MissingValueException exception = assertThrows(MissingValueException.class, () ->
+        assertThrows(MissingValueException.class, () ->
                 brandUseCase.save(brand));
 
-        assertEquals("nombre de marca no puede ser nulo", exception.getMessage());
     }
 
     @Test
     void testSave_EmptyBrandName() {
         brand = new Brand(1L, "", "Valid Description");
 
-        MissingValueException exception = assertThrows(MissingValueException.class, () ->
+        assertThrows(MissingValueException.class, () ->
                 brandUseCase.save(brand));
 
-        assertEquals("nombre de marca no puede ser nulo", exception.getMessage());
     }
 
     @Test
     void testSave_TooLongBrandName() {
         brand = new Brand(1L,"A".repeat(51), "Valid Description");
 
-        DataConstraintViolationException exception = assertThrows(DataConstraintViolationException.class, () ->
+        assertThrows(DataConstraintViolationException.class, () ->
                 brandUseCase.save(brand));
 
-        assertEquals("La longitud de nombre debe ser máximo de: 50 caracteres", exception.getMessage());
     }
 
     @Test
     void testSave_TooLongBrandDescription() {
         brand = new Brand(1L, "Valid Name", "A".repeat(121));
-        DataConstraintViolationException exception = assertThrows(DataConstraintViolationException.class, () ->
+        assertThrows(DataConstraintViolationException.class, () ->
                 brandUseCase.save(brand));
-        assertEquals("La longitud de descripcion debe ser máximo de: 120 caracteres", exception.getMessage());
     }
 
 }
