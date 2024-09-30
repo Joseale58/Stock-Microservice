@@ -10,4 +10,6 @@ public interface IProductServicePort {
     void save(Product product);
 
     void update(Long productId, Integer quantity);
+
+    Product getProductById(Long productId);
 }

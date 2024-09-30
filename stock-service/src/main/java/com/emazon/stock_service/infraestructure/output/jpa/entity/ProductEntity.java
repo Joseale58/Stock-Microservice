@@ -40,5 +40,5 @@ public class ProductEntity {
             name = "product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private List<CategoryEntity> category;
+    private List<CategoryEntity> categories;
 }

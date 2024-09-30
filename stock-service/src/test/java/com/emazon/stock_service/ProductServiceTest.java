@@ -187,7 +187,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void shouldThrowProductsNotFoundExceptionWhenProductDoesNotExist() {
+    void shouldThrowProductsNotFoundExceptionWhenProductDoesNotExistForUpdate() {
         Long productId = 1L;
         Integer validQuantity = 5;
 
@@ -206,6 +206,22 @@ class ProductServiceTest {
         assertDoesNotThrow(() -> productServicePort.update(productId, validQuantity));
 
         verify(productPersistencePort).update(productId, validQuantity);
+    }
+
+    @Test
+    void shouldThrowProductsNotFoundExceptionWhenProductDoesNotExistForGetProductById() {
+        Long productId = 1L;
+        when(productPersistencePort.getProductById(productId)).thenReturn(null);
+        assertThrows(ProductsNotFoundException.class, () -> productServicePort.getProductById(productId));
+    }
+
+    @Test
+    void shouldReturnProductWhenProductExistsForGetProductById() {
+        Long productId = 1L;
+        when(productPersistencePort.getProductById(productId)).thenReturn(product);
+        Product result = productServicePort.getProductById(productId);
+        assertNotNull(result);
+        assertEquals(productId, result.getId());
     }
 
 }

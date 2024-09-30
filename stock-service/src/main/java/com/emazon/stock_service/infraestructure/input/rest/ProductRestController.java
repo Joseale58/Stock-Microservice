@@ -23,6 +23,13 @@ public class ProductRestController {
         return ResponseEntity.ok(productHandler.getPaginatedProducts(page,pageSize, order, sort));
     }
 
+    //To get product by id
+    @Operation(summary = "Get an unique product", description = "Get product by id)")
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductDtoResponse> getProductById(@PathVariable @Parameter(description = "Product id to retrieve") Long productId) {
+        return ResponseEntity.ok(productHandler.getProductById(productId));
+    }
+
     //To create a new product
     @Operation(summary = "Create a new product", description = "Create a new product")
     @PostMapping

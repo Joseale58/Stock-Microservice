@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface IProductRepository extends JpaRepository<ProductEntity,Long>{
     Optional<ProductEntity> findByName(String productName);
 
-    @Query("SELECT p FROM ProductEntity p JOIN FETCH p.category")
+    @Query("SELECT p FROM ProductEntity p JOIN FETCH p.categories")
     List<ProductEntity> findAllWithCategories();
 }

@@ -12,11 +12,11 @@ import java.util.List;
 public interface IProductEntityMapper {
 
     @Mapping(source="brand", target="brand")
-    @Mapping(source="categories", target="category")
+    @Mapping(source="categories", target="categories")
     ProductEntity toProductEntity(Product product);
 
     @Mapping(source="brand", target="brand")
-    @Mapping(source="category", target="categories")
+    @Mapping(source="categories", target="categories")
     Product toProduct(ProductEntity productEntity);
 
     List<Product> toProductList(List<ProductEntity> productEntityList);
