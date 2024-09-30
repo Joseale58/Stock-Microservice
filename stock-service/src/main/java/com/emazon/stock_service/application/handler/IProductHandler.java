@@ -10,4 +10,5 @@ public interface IProductHandler {
     CustomPageDto<ProductDtoResponse> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort);
     void saveProduct (ProductDtoRequest productDtoRequest);
     void updateProduct(UpdateStockDtoRequest updateStockDtoRequest);
+    ProductDtoResponse getProductById(Long productId);
 }

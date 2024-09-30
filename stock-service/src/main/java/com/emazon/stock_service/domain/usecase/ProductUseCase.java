@@ -110,4 +110,14 @@ public class ProductUseCase implements IProductServicePort {
         this.productPersistencePort.update(productId, quantity);
     }
 
+    @Override
+    public Product getProductById(Long productId) {
+        Product product = this.productPersistencePort.getProductById(productId);
+        if(product == null){
+            throw new ProductsNotFoundException();
+        } else {
+            return product;
+        }
+    }
+
 }

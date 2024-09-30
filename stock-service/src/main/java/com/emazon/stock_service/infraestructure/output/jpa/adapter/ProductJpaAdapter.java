@@ -67,7 +67,7 @@ public class ProductJpaAdapter implements IProductPersistencePort {
                 .map(category -> categoryRepository.findById(category.getId())
                         .orElseThrow(() -> new IllegalArgumentException(Constants.CATEGORY_INVALID_ID_EXCEPTION)))
                 .toList();
-        productEntity.setCategory(categoryEntities);
+        productEntity.setCategories(categoryEntities);
         this.productRepository.save(productEntity);
     }
 

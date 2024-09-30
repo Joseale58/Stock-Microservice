@@ -30,7 +30,7 @@ public interface IPageDtoMapper {
 
                     // Mapeo manual de categorías
                     if (product.getCategories() != null) {
-                        productDto.setCategory(
+                        productDto.setCategories(
                                 product.getCategories().stream()
                                         .map(CATEGORY_DTO_MAPPER::toCategoryProductDtoResponse)
                                         .collect(Collectors.toList())

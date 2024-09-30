@@ -25,6 +25,7 @@ public class ProductHandler implements IProductHandler {
 
     private final IProductServicePort productServicePort;
     private final IProductDtoRequestMapper productDtoRequestMapper;
+    private final IProductDtoResponseMapper productDtoResponseMapper;
     private final IPageDtoMapper pageDtoMapper;
 
     @Override
@@ -55,5 +56,10 @@ public class ProductHandler implements IProductHandler {
     @Override
     public void updateProduct(UpdateStockDtoRequest updateStockDtoRequest) {
         this.productServicePort.update(updateStockDtoRequest.getProductId(), updateStockDtoRequest.getQuantity());
+    }
+
+    @Override
+    public ProductDtoResponse getProductById(Long productId) {
+        return this.productDtoResponseMapper.toProductDtoResponse(this.productServicePort.getProductById(productId));
     }
 }
