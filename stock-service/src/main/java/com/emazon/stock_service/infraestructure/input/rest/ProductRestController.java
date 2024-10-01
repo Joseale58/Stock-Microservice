@@ -39,10 +39,17 @@ public class ProductRestController {
     }
 
     //To update a product
-    @Operation(summary = "Update a product", description = "Update a product")
-    @PatchMapping
-    public ResponseEntity<String> updateProduct(@RequestBody UpdateStockDtoRequest updateStockDtoRequest) {
-        productHandler.updateProduct(updateStockDtoRequest);
+    @Operation(summary = "Update a product", description = "Let add stock to a product")
+    @PatchMapping("/addstock")
+    public ResponseEntity<String> addStock(@RequestBody UpdateStockDtoRequest updateStockDtoRequest) {
+        productHandler.addstock(updateStockDtoRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @Operation(summary = "Update a product", description = "Let subtract stock to a product")
+    @PatchMapping("/subtractstock")
+    public ResponseEntity<String> subtractStock(@RequestBody UpdateStockDtoRequest updateStockDtoRequest) {
+        productHandler.subtractstock(updateStockDtoRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

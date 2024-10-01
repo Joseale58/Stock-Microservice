@@ -72,7 +72,7 @@ public class ProductJpaAdapter implements IProductPersistencePort {
     }
 
     @Override
-    public void update(Long productId, Integer quantity) {
+    public void addstock(Long productId, Integer quantity) {
         Optional<ProductEntity> productEntity= productRepository.findById(productId);
         if(productEntity.isPresent()){
             ProductEntity product = productEntity.get();
@@ -81,6 +81,15 @@ public class ProductJpaAdapter implements IProductPersistencePort {
         }
     }
 
+    @Override
+    public void subtractstock(Long productId, Integer quantity) {
+        Optional<ProductEntity> productEntity= productRepository.findById(productId);
+        if(productEntity.isPresent()){
+            ProductEntity product = productEntity.get();
+            product.setStock(product.getStock() - quantity);
+            productRepository.save(product);
+        }
+    }
 
 
 }

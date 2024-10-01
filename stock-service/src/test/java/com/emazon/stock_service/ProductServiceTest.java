@@ -183,31 +183,64 @@ class ProductServiceTest {
         Long productId = 1L;
         Integer negativeQuantity = -5;
 
-        assertThrows(DataConstraintViolationException.class, () -> productServicePort.update(productId, negativeQuantity));
+        assertThrows(DataConstraintViolationException.class, () -> productServicePort.addstock(productId, negativeQuantity));
     }
 
     @Test
-    void shouldThrowProductsNotFoundExceptionWhenProductDoesNotExistForUpdate() {
+    void shouldThrowProductsNotFoundExceptionWhenProductDoesNotExistForAddStock() {
         Long productId = 1L;
         Integer validQuantity = 5;
 
         when(productPersistencePort.getProductById(productId)).thenReturn(null);
 
-        assertThrows(ProductsNotFoundException.class, () -> productServicePort.update(productId, validQuantity));
+        assertThrows(ProductsNotFoundException.class, () -> productServicePort.addstock(productId, validQuantity));
     }
 
     @Test
-    void shouldUpdateProductSuccessfullyWhenProductExistsAndQuantityIsValid() {
+    void shouldAddStockProductSuccessfullyWhenProductExistsAndQuantityIsValid() {
         Long productId = 1L;
         Integer validQuantity = 10;
 
         when(productPersistencePort.getProductById(productId)).thenReturn(product);
 
-        assertDoesNotThrow(() -> productServicePort.update(productId, validQuantity));
+        assertDoesNotThrow(() -> productServicePort.addstock(productId, validQuantity));
 
-        verify(productPersistencePort).update(productId, validQuantity);
+        verify(productPersistencePort).addstock(productId, validQuantity);
     }
 
+    @Test
+    void shouldThrowDataConstraintViolationExceptionWhenSubtractingNegativeQuantity() {
+        Long productId = 1L;
+        Integer invalidQuantity = -5; // Asumiendo que -5 es menor que el valor mínimo permitido en Constants
+
+        assertThrows(DataConstraintViolationException.class,
+                () -> productServicePort.subtractstock(productId, invalidQuantity));
+    }
+
+    @Test
+    void shouldThrowProductsNotFoundExceptionWhenProductDoesNotExistForSubtractStock() {
+        Long productId = 1L;
+        Integer validQuantity = 5;
+
+        when(productPersistencePort.getProductById(productId)).thenReturn(null);
+
+        assertThrows(ProductsNotFoundException.class,
+                () -> productServicePort.subtractstock(productId, validQuantity));
+    }
+
+    @Test
+    void shouldSubtractStockSuccessfullyWhenProductExistsAndQuantityIsValid() {
+        Long productId = 1L;
+        Integer validQuantity = 10;
+
+        when(productPersistencePort.getProductById(productId)).thenReturn(product);
+
+        assertDoesNotThrow(() -> productServicePort.subtractstock(productId, validQuantity));
+
+        verify(productPersistencePort).subtractstock(productId, validQuantity);
+    }
+
+    
     @Test
     void shouldThrowProductsNotFoundExceptionWhenProductDoesNotExistForGetProductById() {
         Long productId = 1L;

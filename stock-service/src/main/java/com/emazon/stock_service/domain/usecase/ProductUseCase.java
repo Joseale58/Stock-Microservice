@@ -100,14 +100,25 @@ public class ProductUseCase implements IProductServicePort {
     }
 
     @Override
-    public void update(Long productId, Integer quantity) {
+    public void addstock(Long productId, Integer quantity) {
         if (quantity < Constants.INVALID_MINIMUM_STOCK_AMOUNT) {
             throw new DataConstraintViolationException(Constants.INVALID_MINIMUM_STOCK_AMOUNT_EXCEPTION);
         }
         if(this.productPersistencePort.getProductById(productId) == null){
             throw new ProductsNotFoundException();
         }
-        this.productPersistencePort.update(productId, quantity);
+        this.productPersistencePort.addstock(productId, quantity);
+    }
+
+    @Override
+    public void subtractstock(Long productId, Integer quantity) {
+        if (quantity < Constants.INVALID_MINIMUM_STOCK_AMOUNT) {
+            throw new DataConstraintViolationException(Constants.INVALID_MINIMUM_STOCK_AMOUNT_EXCEPTION);
+        }
+        if(this.productPersistencePort.getProductById(productId) == null){
+            throw new ProductsNotFoundException();
+        }
+        this.productPersistencePort.subtractstock(productId, quantity);
     }
 
     @Override
