@@ -54,8 +54,13 @@ public class ProductHandler implements IProductHandler {
     }
 
     @Override
-    public void updateProduct(UpdateStockDtoRequest updateStockDtoRequest) {
-        this.productServicePort.update(updateStockDtoRequest.getProductId(), updateStockDtoRequest.getQuantity());
+    public void addstock(UpdateStockDtoRequest updateStockDtoRequest) {
+        this.productServicePort.addstock(updateStockDtoRequest.getProductId(), updateStockDtoRequest.getQuantity());
+    }
+
+    @Override
+    public void subtractstock(UpdateStockDtoRequest updateStockDtoRequest) {
+        this.productServicePort.subtractstock(updateStockDtoRequest.getProductId(), updateStockDtoRequest.getQuantity());
     }
 
     @Override
