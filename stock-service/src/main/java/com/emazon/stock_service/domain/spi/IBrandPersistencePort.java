@@ -10,4 +10,6 @@ public interface IBrandPersistencePort {
     CustomPage<Brand> getPaginatedBrands(Integer page, Integer pageSize, String order);
 
     void save (Brand brand);
+
+    Boolean existsByName(String brandName);
 }

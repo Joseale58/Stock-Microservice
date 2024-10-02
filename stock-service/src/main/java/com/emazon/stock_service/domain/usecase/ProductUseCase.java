@@ -10,6 +10,7 @@ import com.emazon.stock_service.domain.spi.IBrandPersistencePort;
 import com.emazon.stock_service.domain.spi.ICategoryPersistencePort;
 import com.emazon.stock_service.domain.spi.IProductPersistencePort;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
+import com.emazon.stock_service.infraestructure.exception.CategoryNotFoundByNameException;
 import com.emazon.stock_service.infraestructure.exception.ProductsNotFoundException;
 import com.emazon.stock_service.utils.Constants;
 
@@ -30,7 +31,7 @@ public class ProductUseCase implements IProductServicePort {
     }
 
     @Override
-    public CustomPage<Product> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort) {
+    public CustomPage<Product> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort, String brandName, String categoryName, List<Long> productsId) {
         if (page < Constants.PAGE_MINIMUM_INDEX) {
             throw new IllegalArgumentException(Constants.PAGE_MUST_BE_POSITIVE_EXCEPTION);
         }
@@ -44,7 +45,15 @@ public class ProductUseCase implements IProductServicePort {
             throw new IllegalArgumentException(Constants.PAGE_SORT_OPTION_EXCEPTION);
         }
 
-        return this.productPersistencePort.getPaginatedProducts(page, pageSize, order, sort);
+        if(!brandName.isEmpty() && !brandPersistencePort.existsByName(brandName)){
+            throw new IllegalArgumentException(Constants.INVALID_BRAND_NAME_EXCEPTION);
+        }
+
+        if(!categoryName.isEmpty() && !categoryPersistencePort.existsByName(categoryName)){
+            throw new IllegalArgumentException(Constants.INVALID_CATEGORY_NAME_EXCEPTION);
+        }
+
+        return this.productPersistencePort.getPaginatedProducts(page, pageSize, order, sort, brandName, categoryName, productsId);
     }
 
     @Override

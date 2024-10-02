@@ -20,4 +20,6 @@ public interface ICategoryPersistencePort {
     void update(Category category);
 
     void delete(Category category);
+
+    Boolean existsByName(String categoryName);
 }

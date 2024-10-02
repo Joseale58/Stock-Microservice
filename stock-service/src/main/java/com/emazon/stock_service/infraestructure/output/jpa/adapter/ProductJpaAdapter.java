@@ -12,11 +12,13 @@ import com.emazon.stock_service.infraestructure.output.jpa.mapper.IProductEntity
 import com.emazon.stock_service.infraestructure.output.jpa.repository.ICategoryRepository;
 import com.emazon.stock_service.infraestructure.output.jpa.repository.IProductRepository;
 import com.emazon.stock_service.utils.Constants;
+import jakarta.persistence.criteria.Join;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +34,7 @@ public class ProductJpaAdapter implements IProductPersistencePort {
     private final IPageMapper pageMapper;
 
     @Override
-    public CustomPage<Product> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort) {
+    public CustomPage<Product> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort, String brandName, String categoryName, List<Long> productsId) {
         Sort.Direction direction = Sort.Direction.fromString(order);
         Pageable pageable;
         if (Constants.PAGE_CATEGORY_OPTION.equalsIgnoreCase(sort)) {
@@ -42,7 +44,28 @@ public class ProductJpaAdapter implements IProductPersistencePort {
         } else {
             pageable = PageRequest.of(page, pageSize, Sort.by(direction, sort));
         }
-        Page<ProductEntity> productEntityPage = productRepository.findAll(pageable);
+
+        Specification<ProductEntity> spec = Specification.where(null);
+
+        if (brandName != null && !brandName.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("brand").get("name"), brandName));
+        }
+
+        if (categoryName != null && !categoryName.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                Join<Object, Object> categoryJoin = root.join("categories");
+                return criteriaBuilder.equal(categoryJoin.get("name"), categoryName);
+            });
+        }
+
+        if (productsId != null && !productsId.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    root.get("id").in(productsId));
+        }
+
+
+        Page<ProductEntity> productEntityPage = productRepository.findAll(spec,pageable);
         List<ProductEntity> productList = productEntityPage.getContent();
         if (productList.isEmpty()) {
             throw new ProductsNotFoundException();
