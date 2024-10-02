@@ -101,5 +101,10 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
     }
 
+    @Override
+    public Boolean existsByName(String categoryName) {
+        return categoryRepository.findByName(categoryName).isPresent();
+    }
+
 
 }

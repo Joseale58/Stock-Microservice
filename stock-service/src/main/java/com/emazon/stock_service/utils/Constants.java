@@ -11,6 +11,20 @@ public class Constants {
     //Messsages for exeptions
     public static final String EXCEPTION_MESSAGE = "Mensaje: ";
 
+
+    //Controller
+
+    public static final String DEFAULT_PAGE = "0";
+    public static final String DEFAULT_SIZE = "5";
+    public static final String DEFAULT_SORT_DIRECTION = "ASC";
+    public static final String DEFAULT_SORT_BY = "name";
+    public static final String DEFAULT_CATEGORY_NAME = "";
+    public static final String DEFAULT_BRAND_NAME = "";
+
+    public static final String SUCCESFULLY_CREATED = "Se creó exitosamente el producto: ";
+
+
+
     //Usecases
 
     //Pagination
@@ -31,6 +45,9 @@ public class Constants {
     public static final String PAGE_CATEGORY_OPTION = "category";
     public static final String PAGE_CATEGORY_SORT_OPTION = "category.name";
     public static final String PAGE_SORT_OPTION_EXCEPTION = "El parámetro de ordenamiento debe ser 'name', 'brand' o 'category'.";
+
+    public static final String INVALID_CATEGORY_NAME_EXCEPTION = "Nombre de categoría no puede ser nulo o vacío";
+    public static final String INVALID_BRAND_NAME_EXCEPTION = "Nombre de marca no puede ser nulo o vacío";
     //Brand
     public static final String MISSING_BRAND_NAME_EXCEPTION= "Nombre de marca no puede ser nulo o vacío";
     public static final String MISSING_BRAND_DESCRIPTION_EXCEPTION = "Descripción de marca no puede ser nulo o vacío";

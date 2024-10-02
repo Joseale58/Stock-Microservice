@@ -13,10 +13,12 @@ import com.emazon.stock_service.domain.spi.IProductPersistencePort;
 import com.emazon.stock_service.domain.usecase.ProductUseCase;
 import com.emazon.stock_service.domain.util.pageable.CustomPage;
 import com.emazon.stock_service.infraestructure.exception.ProductsNotFoundException;
+import com.emazon.stock_service.utils.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,29 +55,87 @@ class ProductServiceTest {
 
     @Test
     void shouldThrowExceptionForInvalidPageNumber() {
-        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(-1, 10, "asc", "name"));
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(-1, 10, "asc", "name","","",null));
     }
 
     @Test
     void shouldThrowExceptionForInvalidPageSize() {
-        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 0, "asc", "name"));
-        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 101, "asc", "name"));
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 0, "asc", "name","","",null));
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 101, "asc", "name", "","",null));
     }
 
     @Test
     void shouldThrowExceptionForInvalidOrder() {
-        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 10, "ascending", "name"));
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 10, "ascending", "name","","",null));
     }
 
     @Test
     void shouldThrowExceptionForInvalidSort() {
-        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 10, "asc", "color"));
+        assertThrows(IllegalArgumentException.class, () -> productServicePort.getPaginatedProducts(0, 10, "asc", "color","","",null));
+    }
+    @Test
+    void shouldThrowExceptionForInvalidBrandName() {
+        String invalidBrandName = "InvalidBrand";
+
+        when(brandPersistencePort.existsByName(invalidBrandName)).thenReturn(false);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            productServicePort.getPaginatedProducts(0, 10, "asc", "name", invalidBrandName, "", new ArrayList<>());
+        });
+
+        assertEquals(Constants.INVALID_BRAND_NAME_EXCEPTION, exception.getMessage());
+    }
+
+    @Test
+    void shouldNotThrowExceptionForValidBrandName() {
+        String validBrandName = "ValidBrand";
+
+        when(brandPersistencePort.existsByName(validBrandName)).thenReturn(true);
+
+        assertDoesNotThrow(() -> {
+            productServicePort.getPaginatedProducts(0, 10, "asc", "name", validBrandName, "", new ArrayList<>());
+        });
+    }
+
+    @Test
+    void shouldNotThrowExceptionForEmptyBrandName() {
+        assertDoesNotThrow(() -> {
+            productServicePort.getPaginatedProducts(0, 10, "asc", "name", "", "", new ArrayList<>());
+        });
+    }
+
+    @Test
+    void shouldThrowExceptionForInvalidCategoryName() {
+        String invalidCategoryName = "InvalidCategory";
+        when(categoryPersistencePort.existsByName(invalidCategoryName)).thenReturn(false);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            productServicePort.getPaginatedProducts(0, 10, "asc", "name", "", invalidCategoryName, new ArrayList<>());
+        });
+
+        assertEquals(Constants.INVALID_CATEGORY_NAME_EXCEPTION, exception.getMessage());
+    }
+
+    @Test
+    void shouldNotThrowExceptionForValidCategoryName() {
+        String validCategoryName = "ValidCategory";
+        when(categoryPersistencePort.existsByName(validCategoryName)).thenReturn(true);
+
+        assertDoesNotThrow(() -> {
+            productServicePort.getPaginatedProducts(0, 10, "asc", "name", "", validCategoryName, new ArrayList<>());
+        });
+    }
+
+    @Test
+    void shouldNotThrowExceptionForEmptyCategoryName() {
+        assertDoesNotThrow(() -> {
+            productServicePort.getPaginatedProducts(0, 10, "asc", "name", "", "", new ArrayList<>());
+        });
     }
 
     @Test
     void shouldHandleValidPaginationParameters() {
-        when(productPersistencePort.getPaginatedProducts(anyInt(), anyInt(), anyString(), anyString())).thenReturn(new CustomPage<>(List.of(product), 10L, 10, 0,true, false));
-        CustomPage<Product> result = productServicePort.getPaginatedProducts(0, 10, "asc", "name");
+        when(productPersistencePort.getPaginatedProducts(anyInt(), anyInt(), anyString(), anyString(),anyString(),anyString(),anyList())).thenReturn(new CustomPage<>(List.of(product), 10L, 10, 0,true, false));
+        CustomPage<Product> result = productServicePort.getPaginatedProducts(0, 10, "asc", "name","","",new ArrayList<>());
         assertNotNull(result);
         assertEquals(10, result.getTotalPages());
     }

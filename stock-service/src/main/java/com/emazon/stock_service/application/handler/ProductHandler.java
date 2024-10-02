@@ -29,8 +29,8 @@ public class ProductHandler implements IProductHandler {
     private final IPageDtoMapper pageDtoMapper;
 
     @Override
-    public CustomPageDto<ProductDtoResponse> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort) {
-        return pageDtoMapper.toProductDtoPageCustom(this.productServicePort.getPaginatedProducts(page, pageSize, order, sort));
+    public CustomPageDto<ProductDtoResponse> getPaginatedProducts(Integer page, Integer pageSize, String order, String sort, String brandName, String categoryName, List<Long> productsId) {
+        return pageDtoMapper.toProductDtoPageCustom(this.productServicePort.getPaginatedProducts(page, pageSize, order, sort, brandName, categoryName, productsId));
     }
 
     @Override
